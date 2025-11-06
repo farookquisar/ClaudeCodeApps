@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Payment Tracker</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <style>
+        :root {
+            /* Professional Color Palette */
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-200: #bfdbfe;
+            --primary-300: #93c5fd;
+            --primary-400: #60a5fa;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+            --primary-800: #1e40af;
+            --primary-900: #1e3a8a;
+
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+
+            --neutral-50: #fafafa;
+            --neutral-100: #f5f5f5;
+            --neutral-200: #e5e5e5;
+            --neutral-300: #d4d4d4;
+            --neutral-400: #a3a3a3;
+            --neutral-500: #737373;
+            --neutral-600: #525252;
+            --neutral-700: #404040;
+            --neutral-800: #262626;
+            --neutral-900: #171717;
+
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-2px);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-primary {
+            background: var(--primary-100);
+            color: var(--primary-800);
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-600);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-700);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--neutral-200);
+            color: var(--neutral-800);
+        }
+
+        .btn-secondary:hover {
+            background: var(--neutral-300);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--neutral-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px var(--primary-100);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neutral-900);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .transaction-item {
+            padding: 1rem;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .transaction-item:hover {
+            background: var(--neutral-50);
+        }
+
+        .transaction-expense {
+            border-left-color: var(--danger);
+        }
+
+        .transaction-contribution {
+            border-left-color: var(--success);
+        }
+
+        .member-balance-positive {
+            color: var(--success);
+        }
+
+        .member-balance-negative {
+            color: var(--danger);
+        }
+
+        .settlement-item {
+            padding: 1rem;
+            background: var(--neutral-50);
+            border-left: 4px solid var(--primary-500);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--neutral-100);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-400);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-500);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="glass sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl">💰</div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Project Payment Tracker</h1>
+                        <p class="text-sm text-gray-600">Track contributions and expenses for your project</p>
+                    </div>
+                </div>
+                <button onclick="showAddMemberModal()" class="btn btn-primary">
+                    <span>➕</span>
+                    Add Member
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Statistics Dashboard -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-in">
+            <div class="stat-card">
+                <div class="stat-label">Total Contributions</div>
+                <div class="stat-value text-green-600" id="totalContributions">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Expenses</div>
+                <div class="stat-value text-red-600" id="totalExpenses">$0.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Project Balance</div>
+                <div class="stat-value text-blue-600" id="projectBalance">$0.00</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Members Section -->
+            <div class="card p-6 animate-in">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">👥 Members</h2>
+                    <span class="badge badge-primary" id="memberCount">0 members</span>
+                </div>
+                <div id="membersList" class="space-y-3">
+                    <p class="text-gray-500 text-center py-8">No members yet. Add your first member!</p>
+                </div>
+            </div>
+
+            <!-- Settlements Section -->
+            <div class="card p-6 animate-in">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">🤝 Settlements</h2>
+                    <span class="badge badge-warning" id="settlementCount">0 settlements</span>
+                </div>
+                <div id="settlementsList" class="space-y-3">
+                    <p class="text-gray-500 text-center py-8">No settlements needed yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Section -->
+        <div class="card p-6 mt-8 animate-in">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-gray-800">📊 Transactions</h2>
+                <button onclick="showAddTransactionModal()" class="btn btn-primary">
+                    <span>➕</span>
+                    Add Transaction
+                </button>
+            </div>
+            <div id="transactionsList">
+                <p class="text-gray-500 text-center py-8">No transactions yet. Add your first transaction!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Member Modal -->
+    <div id="addMemberModal" class="modal">
+        <div class="modal-content">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Add New Member</h3>
+                <div class="input-group">
+                    <label class="input-label">Member Name</label>
+                    <input type="text" id="memberName" class="input-field" placeholder="Enter member name">
+                </div>
+                <div class="flex gap-3 justify-end">
+                    <button onclick="closeAddMemberModal()" class="btn btn-secondary">Cancel</button>
+                    <button onclick="addMember()" class="btn btn-primary">Add Member</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <div id="addTransactionModal" class="modal">
+        <div class="modal-content">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Add Transaction</h3>
+
+                <div class="input-group">
+                    <label class="input-label">Transaction Type</label>
+                    <select id="transactionType" class="input-field" onchange="updateTransactionForm()">
+                        <option value="expense">Expense</option>
+                        <option value="contribution">Contribution</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Description</label>
+                    <input type="text" id="transactionDescription" class="input-field" placeholder="e.g., Office supplies, Monthly rent">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Amount ($)</label>
+                    <input type="number" id="transactionAmount" class="input-field" placeholder="0.00" step="0.01" min="0">
+                </div>
+
+                <div class="input-group" id="paidByGroup">
+                    <label class="input-label">Paid By</label>
+                    <select id="paidBy" class="input-field">
+                        <option value="">Select member</option>
+                    </select>
+                </div>
+
+                <div class="input-group" id="contributedByGroup" style="display: none;">
+                    <label class="input-label">Contributed By</label>
+                    <select id="contributedBy" class="input-field">
+                        <option value="">Select member</option>
+                    </select>
+                </div>
+
+                <div class="input-group" id="splitTypeGroup">
+                    <label class="input-label">Split Type</label>
+                    <select id="splitType" class="input-field" onchange="updateSplitOptions()">
+                        <option value="equal">Split Equally</option>
+                        <option value="unequal">Split Unequally</option>
+                    </select>
+                </div>
+
+                <div class="input-group" id="participantsGroup">
+                    <label class="input-label">Split Among</label>
+                    <div id="participantsList" class="space-y-2 max-h-48 overflow-y-auto p-2 border rounded-lg">
+                    </div>
+                </div>
+
+                <div class="flex gap-3 justify-end mt-6">
+                    <button onclick="closeAddTransactionModal()" class="btn btn-secondary">Cancel</button>
+                    <button onclick="addTransaction()" class="btn btn-primary">Add Transaction</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let members = [];
+        let transactions = [];
+
+        // Load data from localStorage
+        function loadData() {
+            const savedMembers = localStorage.getItem('projectMembers');
+            const savedTransactions = localStorage.getItem('projectTransactions');
+
+            if (savedMembers) members = JSON.parse(savedMembers);
+            if (savedTransactions) transactions = JSON.parse(savedTransactions);
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('projectMembers', JSON.stringify(members));
+            localStorage.setItem('projectTransactions', JSON.stringify(transactions));
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return '$' + Math.abs(amount).toFixed(2);
+        }
+
+        // Add Member Modal Functions
+        function showAddMemberModal() {
+            document.getElementById('addMemberModal').classList.add('active');
+            document.getElementById('memberName').value = '';
+            document.getElementById('memberName').focus();
+        }
+
+        function closeAddMemberModal() {
+            document.getElementById('addMemberModal').classList.remove('active');
+        }
+
+        function addMember() {
+            const name = document.getElementById('memberName').value.trim();
+
+            if (!name) {
+                alert('Please enter a member name');
+                return;
+            }
+
+            if (members.find(m => m.name.toLowerCase() === name.toLowerCase())) {
+                alert('Member already exists');
+                return;
+            }
+
+            members.push({
+                id: Date.now(),
+                name: name,
+                balance: 0
+            });
+
+            saveData();
+            closeAddMemberModal();
+            renderMembers();
+            updateStats();
+        }
+
+        // Transaction Modal Functions
+        function showAddTransactionModal() {
+            if (members.length === 0) {
+                alert('Please add members first');
+                return;
+            }
+
+            document.getElementById('addTransactionModal').classList.add('active');
+            document.getElementById('transactionDescription').value = '';
+            document.getElementById('transactionAmount').value = '';
+            updateTransactionForm();
+            populateMemberSelects();
+            renderParticipantsList();
+        }
+
+        function closeAddTransactionModal() {
+            document.getElementById('addTransactionModal').classList.remove('active');
+        }
+
+        function updateTransactionForm() {
+            const type = document.getElementById('transactionType').value;
+            const paidByGroup = document.getElementById('paidByGroup');
+            const contributedByGroup = document.getElementById('contributedByGroup');
+            const splitTypeGroup = document.getElementById('splitTypeGroup');
+            const participantsGroup = document.getElementById('participantsGroup');
+
+            if (type === 'expense') {
+                paidByGroup.style.display = 'block';
+                contributedByGroup.style.display = 'none';
+                splitTypeGroup.style.display = 'block';
+                participantsGroup.style.display = 'block';
+            } else {
+                paidByGroup.style.display = 'none';
+                contributedByGroup.style.display = 'block';
+                splitTypeGroup.style.display = 'none';
+                participantsGroup.style.display = 'none';
+            }
+        }
+
+        function populateMemberSelects() {
+            const paidBySelect = document.getElementById('paidBy');
+            const contributedBySelect = document.getElementById('contributedBy');
+
+            paidBySelect.innerHTML = '<option value="">Select member</option>';
+            contributedBySelect.innerHTML = '<option value="">Select member</option>';
+
+            members.forEach(member => {
+                paidBySelect.innerHTML += `<option value="${member.id}">${member.name}</option>`;
+                contributedBySelect.innerHTML += `<option value="${member.id}">${member.name}</option>`;
+            });
+        }
+
+        function renderParticipantsList() {
+            const participantsList = document.getElementById('participantsList');
+            const splitType = document.getElementById('splitType').value;
+
+            participantsList.innerHTML = '';
+
+            members.forEach(member => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center gap-2 p-2 bg-gray-50 rounded';
+
+                if (splitType === 'equal') {
+                    div.innerHTML = `
+                        <input type="checkbox" id="participant-${member.id}" value="${member.id}" checked
+                               class="w-4 h-4 text-blue-600 rounded">
+                        <label for="participant-${member.id}" class="flex-1 text-sm">${member.name}</label>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <input type="checkbox" id="participant-${member.id}" value="${member.id}" checked
+                               class="w-4 h-4 text-blue-600 rounded">
+                        <label for="participant-${member.id}" class="text-sm">${member.name}</label>
+                        <input type="number" id="amount-${member.id}" placeholder="0.00" step="0.01" min="0"
+                               class="w-24 px-2 py-1 border rounded text-sm">
+                    `;
+                }
+
+                participantsList.appendChild(div);
+            });
+        }
+
+        function updateSplitOptions() {
+            renderParticipantsList();
+        }
+
+        function addTransaction() {
+            const type = document.getElementById('transactionType').value;
+            const description = document.getElementById('transactionDescription').value.trim();
+            const amount = parseFloat(document.getElementById('transactionAmount').value);
+
+            if (!description) {
+                alert('Please enter a description');
+                return;
+            }
+
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            const transaction = {
+                id: Date.now(),
+                type: type,
+                description: description,
+                amount: amount,
+                date: new Date().toISOString()
+            };
+
+            if (type === 'expense') {
+                const paidById = document.getElementById('paidBy').value;
+                if (!paidById) {
+                    alert('Please select who paid');
+                    return;
+                }
+
+                transaction.paidBy = parseInt(paidById);
+
+                const splitType = document.getElementById('splitType').value;
+                const participants = [];
+                const checkboxes = document.querySelectorAll('#participantsList input[type="checkbox"]:checked');
+
+                if (checkboxes.length === 0) {
+                    alert('Please select at least one participant');
+                    return;
+                }
+
+                if (splitType === 'equal') {
+                    checkboxes.forEach(cb => {
+                        participants.push({
+                            memberId: parseInt(cb.value),
+                            amount: amount / checkboxes.length
+                        });
+                    });
+                } else {
+                    let total = 0;
+                    checkboxes.forEach(cb => {
+                        const memberAmount = parseFloat(document.getElementById(`amount-${cb.value}`).value) || 0;
+                        total += memberAmount;
+                        participants.push({
+                            memberId: parseInt(cb.value),
+                            amount: memberAmount
+                        });
+                    });
+
+                    if (Math.abs(total - amount) > 0.01) {
+                        alert(`Split amounts (${formatCurrency(total)}) must equal total amount (${formatCurrency(amount)})`);
+                        return;
+                    }
+                }
+
+                transaction.splitType = splitType;
+                transaction.participants = participants;
+
+                // Update balances for expense
+                const payer = members.find(m => m.id === transaction.paidBy);
+                payer.balance += amount; // Payer is owed this amount
+
+                participants.forEach(p => {
+                    const member = members.find(m => m.id === p.memberId);
+                    member.balance -= p.amount; // Participant owes this amount
+                });
+
+            } else {
+                // Contribution
+                const contributedById = document.getElementById('contributedBy').value;
+                if (!contributedById) {
+                    alert('Please select who contributed');
+                    return;
+                }
+
+                transaction.contributedBy = parseInt(contributedById);
+
+                // Update balance for contribution
+                const contributor = members.find(m => m.id === transaction.contributedBy);
+                contributor.balance += amount; // Contributor has put in this amount
+            }
+
+            transactions.push(transaction);
+            saveData();
+            closeAddTransactionModal();
+            renderAll();
+        }
+
+        // Calculate settlements
+        function calculateSettlements() {
+            const balances = members.map(m => ({ ...m }));
+            const settlements = [];
+
+            // Separate debtors and creditors
+            const debtors = balances.filter(m => m.balance < -0.01).sort((a, b) => a.balance - b.balance);
+            const creditors = balances.filter(m => m.balance > 0.01).sort((a, b) => b.balance - a.balance);
+
+            let i = 0, j = 0;
+
+            while (i < debtors.length && j < creditors.length) {
+                const debtor = debtors[i];
+                const creditor = creditors[j];
+
+                const amount = Math.min(Math.abs(debtor.balance), creditor.balance);
+
+                if (amount > 0.01) {
+                    settlements.push({
+                        from: debtor.name,
+                        to: creditor.name,
+                        amount: amount
+                    });
+
+                    debtor.balance += amount;
+                    creditor.balance -= amount;
+                }
+
+                if (Math.abs(debtor.balance) < 0.01) i++;
+                if (Math.abs(creditor.balance) < 0.01) j++;
+            }
+
+            return settlements;
+        }
+
+        // Render Functions
+        function renderMembers() {
+            const membersList = document.getElementById('membersList');
+
+            if (members.length === 0) {
+                membersList.innerHTML = '<p class="text-gray-500 text-center py-8">No members yet. Add your first member!</p>';
+                document.getElementById('memberCount').textContent = '0 members';
+                return;
+            }
+
+            membersList.innerHTML = members.map(member => `
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                            ${member.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <div class="font-semibold text-gray-800">${member.name}</div>
+                            <div class="text-sm ${member.balance > 0.01 ? 'member-balance-positive' : member.balance < -0.01 ? 'member-balance-negative' : 'text-gray-600'}">
+                                ${member.balance > 0.01 ? 'Gets back' : member.balance < -0.01 ? 'Owes' : 'Settled'}: ${formatCurrency(member.balance)}
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="removeMember(${member.id})" class="text-red-500 hover:text-red-700 text-xl" title="Remove member">
+                        ❌
+                    </button>
+                </div>
+            `).join('');
+
+            document.getElementById('memberCount').textContent = `${members.length} member${members.length !== 1 ? 's' : ''}`;
+        }
+
+        function renderTransactions() {
+            const transactionsList = document.getElementById('transactionsList');
+
+            if (transactions.length === 0) {
+                transactionsList.innerHTML = '<p class="text-gray-500 text-center py-8">No transactions yet. Add your first transaction!</p>';
+                return;
+            }
+
+            const sortedTransactions = [...transactions].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            transactionsList.innerHTML = sortedTransactions.map(txn => {
+                const date = new Date(txn.date).toLocaleDateString();
+                const isExpense = txn.type === 'expense';
+
+                let details = '';
+                if (isExpense) {
+                    const payer = members.find(m => m.id === txn.paidBy);
+                    const participantNames = txn.participants.map(p => {
+                        const member = members.find(m => m.id === p.memberId);
+                        return `${member?.name} (${formatCurrency(p.amount)})`;
+                    }).join(', ');
+                    details = `Paid by ${payer?.name || 'Unknown'} • Split: ${participantNames}`;
+                } else {
+                    const contributor = members.find(m => m.id === txn.contributedBy);
+                    details = `Contributed by ${contributor?.name || 'Unknown'}`;
+                }
+
+                return `
+                    <div class="transaction-item transaction-${txn.type} border-b last:border-b-0">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-lg">${isExpense ? '💸' : '💰'}</span>
+                                    <h4 class="font-semibold text-gray-800">${txn.description}</h4>
+                                    <span class="badge ${isExpense ? 'badge-danger' : 'badge-success'}">
+                                        ${isExpense ? 'Expense' : 'Contribution'}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-600 ml-7">${details}</p>
+                                <p class="text-xs text-gray-500 ml-7 mt-1">${date}</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xl font-bold ${isExpense ? 'text-red-600' : 'text-green-600'}">
+                                    ${isExpense ? '-' : '+'}${formatCurrency(txn.amount)}
+                                </div>
+                                <button onclick="removeTransaction(${txn.id})" class="text-red-500 hover:text-red-700 text-sm mt-1">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderSettlements() {
+            const settlementsList = document.getElementById('settlementsList');
+            const settlements = calculateSettlements();
+
+            if (settlements.length === 0) {
+                settlementsList.innerHTML = '<p class="text-gray-500 text-center py-8">No settlements needed. All balanced! 🎉</p>';
+                document.getElementById('settlementCount').textContent = '0 settlements';
+                return;
+            }
+
+            settlementsList.innerHTML = settlements.map(settlement => `
+                <div class="settlement-item">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">💵</span>
+                            <div>
+                                <div class="font-semibold text-gray-800">${settlement.from} → ${settlement.to}</div>
+                                <div class="text-sm text-gray-600">Settlement payment</div>
+                            </div>
+                        </div>
+                        <div class="text-xl font-bold text-blue-600">
+                            ${formatCurrency(settlement.amount)}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('settlementCount').textContent = `${settlements.length} settlement${settlements.length !== 1 ? 's' : ''}`;
+        }
+
+        function updateStats() {
+            let totalContributions = 0;
+            let totalExpenses = 0;
+
+            transactions.forEach(txn => {
+                if (txn.type === 'contribution') {
+                    totalContributions += txn.amount;
+                } else {
+                    totalExpenses += txn.amount;
+                }
+            });
+
+            const projectBalance = totalContributions - totalExpenses;
+
+            document.getElementById('totalContributions').textContent = formatCurrency(totalContributions);
+            document.getElementById('totalExpenses').textContent = formatCurrency(totalExpenses);
+            document.getElementById('projectBalance').textContent = formatCurrency(projectBalance);
+        }
+
+        function renderAll() {
+            renderMembers();
+            renderTransactions();
+            renderSettlements();
+            updateStats();
+        }
+
+        // Remove functions
+        function removeMember(memberId) {
+            if (!confirm('Are you sure you want to remove this member? This will also remove their transactions.')) {
+                return;
+            }
+
+            members = members.filter(m => m.id !== memberId);
+            transactions = transactions.filter(t => {
+                if (t.type === 'contribution') {
+                    return t.contributedBy !== memberId;
+                } else {
+                    return t.paidBy !== memberId && !t.participants.some(p => p.memberId === memberId);
+                }
+            });
+
+            // Recalculate all balances
+            recalculateBalances();
+            saveData();
+            renderAll();
+        }
+
+        function removeTransaction(txnId) {
+            if (!confirm('Are you sure you want to delete this transaction?')) {
+                return;
+            }
+
+            transactions = transactions.filter(t => t.id !== txnId);
+            recalculateBalances();
+            saveData();
+            renderAll();
+        }
+
+        function recalculateBalances() {
+            // Reset all balances
+            members.forEach(m => m.balance = 0);
+
+            // Recalculate from transactions
+            transactions.forEach(txn => {
+                if (txn.type === 'expense') {
+                    const payer = members.find(m => m.id === txn.paidBy);
+                    if (payer) payer.balance += txn.amount;
+
+                    txn.participants.forEach(p => {
+                        const member = members.find(m => m.id === p.memberId);
+                        if (member) member.balance -= p.amount;
+                    });
+                } else {
+                    const contributor = members.find(m => m.id === txn.contributedBy);
+                    if (contributor) contributor.balance += txn.amount;
+                }
+            });
+        }
+
+        // Initialize app
+        loadData();
+        renderAll();
+
+        // Close modals on background click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Handle Enter key in member name input
+        document.getElementById('memberName').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addMember();
+        });
+    </script>
+</body>
+</html>
