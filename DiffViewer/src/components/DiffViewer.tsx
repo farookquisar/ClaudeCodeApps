@@ -35,7 +35,7 @@ export const DiffViewer = ({
             <h3 className="text-lg md:text-xl font-bold gradient-text">
               Code Comparison
             </h3>
-            <p className="text-xs text-dark-400">
+            <p className="text-xs text-gray-400">
               Real-time diff visualization
             </p>
           </div>

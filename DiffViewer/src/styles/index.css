@@ -15,9 +15,9 @@
 
   body {
     @apply font-sans antialiased;
-    @apply bg-dark-950 text-dark-50;
+    @apply bg-dark-950 text-gray-100;
     @apply min-h-screen overflow-x-hidden relative;
-    background-image: radial-gradient(circle at 1px 1px, rgba(0, 217, 255, 0.05) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0, 217, 255, 0.08) 1px, transparent 0);
     background-size: 40px 40px;
   }
 
@@ -25,15 +25,15 @@
     content: '';
     @apply fixed inset-0 pointer-events-none;
     background: linear-gradient(180deg,
-      rgba(2, 6, 23, 0.9) 0%,
-      rgba(2, 6, 23, 0.7) 50%,
-      rgba(2, 6, 23, 0.9) 100%
+      rgba(2, 6, 23, 0.7) 0%,
+      rgba(2, 6, 23, 0.5) 50%,
+      rgba(2, 6, 23, 0.7) 100%
     );
     z-index: 0;
   }
 
   body.dark {
-    @apply bg-dark-950 text-dark-50;
+    @apply bg-dark-950 text-gray-100;
   }
 
   body:not(.dark) {
@@ -65,9 +65,9 @@
   /* Cyber Glass Card Effect */
   .glass-card {
     @apply relative;
-    @apply bg-dark-900/40 dark:bg-dark-900/40;
+    @apply bg-dark-900/80 dark:bg-dark-900/80;
     @apply backdrop-blur-xl backdrop-saturate-150;
-    @apply border border-neon-blue/20;
+    @apply border border-neon-blue/30;
     @apply shadow-neon;
     position: relative;
     overflow: hidden;
@@ -78,9 +78,9 @@
     @apply absolute inset-0 pointer-events-none;
     background: linear-gradient(
       135deg,
-      rgba(0, 217, 255, 0.05) 0%,
+      rgba(0, 217, 255, 0.08) 0%,
       transparent 50%,
-      rgba(189, 0, 255, 0.05) 100%
+      rgba(189, 0, 255, 0.08) 100%
     );
   }
 
@@ -90,7 +90,7 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(0, 217, 255, 0.5),
+      rgba(0, 217, 255, 0.6),
       transparent
     );
   }
@@ -200,18 +200,18 @@
   /* Input Styles */
   .input-field {
     @apply w-full px-4 py-3 rounded-xl;
-    @apply border border-neon-blue/30;
-    @apply bg-dark-800/50 backdrop-blur-sm;
-    @apply text-dark-50;
-    @apply focus:border-neon-blue/70 focus:ring-2 focus:ring-neon-blue/20;
-    @apply hover:border-neon-blue/50;
+    @apply border-2 border-neon-blue/40;
+    @apply bg-dark-800/90 backdrop-blur-sm;
+    @apply text-gray-100;
+    @apply focus:border-neon-blue/80 focus:ring-2 focus:ring-neon-blue/30;
+    @apply hover:border-neon-blue/60;
     @apply outline-none transition-all duration-300;
     @apply font-medium;
     @apply shadow-inner-glow;
   }
 
   .input-field:focus {
-    @apply shadow-neon;
+    @apply shadow-neon bg-dark-800;
   }
 
   /* Select Dropdown */
@@ -225,11 +225,11 @@
   /* Textarea */
   .textarea-field {
     @apply w-full px-4 py-3 rounded-xl;
-    @apply border border-neon-blue/30;
-    @apply bg-dark-800/50 backdrop-blur-sm;
-    @apply text-dark-50;
-    @apply focus:border-neon-blue/70 focus:ring-2 focus:ring-neon-blue/20;
-    @apply hover:border-neon-blue/50;
+    @apply border-2 border-neon-blue/40;
+    @apply bg-dark-800/90 backdrop-blur-sm;
+    @apply text-gray-100;
+    @apply focus:border-neon-blue/80 focus:ring-2 focus:ring-neon-blue/30;
+    @apply hover:border-neon-blue/60;
     @apply outline-none transition-all duration-300;
     @apply font-medium;
     @apply shadow-inner-glow;
@@ -238,7 +238,11 @@
   }
 
   .textarea-field:focus {
-    @apply shadow-neon;
+    @apply shadow-neon bg-dark-800;
+  }
+
+  .textarea-field::placeholder {
+    @apply text-gray-500;
   }
 
   /* Gradient Text */
@@ -323,17 +327,17 @@
   /* Label Style */
   .cyber-label {
     @apply text-xs font-bold uppercase tracking-wider;
-    @apply text-neon-blue/80;
+    @apply text-cyan-300;
     @apply mb-2 block;
-    text-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
   }
 
   /* Badge */
   .cyber-badge {
     @apply inline-flex items-center px-3 py-1;
-    @apply bg-neon-blue/10 border border-neon-blue/30;
+    @apply bg-cyan-500/20 border border-cyan-400/40;
     @apply rounded-full text-xs font-semibold;
-    @apply text-neon-blue;
+    @apply text-cyan-300;
   }
 }
 
@@ -423,19 +427,24 @@
 /* Light Mode Overrides */
 body:not(.dark) {
   .glass-card {
-    @apply bg-white/70 border-cyan-200;
+    @apply bg-white/90 border-cyan-300;
   }
 
-  .input-field {
-    @apply bg-white/80 border-cyan-300 text-gray-900;
+  .input-field,
+  .textarea-field {
+    @apply bg-white/95 border-cyan-400 text-gray-900;
   }
 
   .cyber-label {
-    @apply text-cyan-600;
+    @apply text-cyan-700;
   }
 
   .gradient-text {
     @apply from-cyan-600 via-blue-600 to-purple-600;
+  }
+
+  .cyber-badge {
+    @apply bg-cyan-100 border-cyan-300 text-cyan-700;
   }
 }
 

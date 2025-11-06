@@ -4,17 +4,17 @@ export const Footer = () => {
       <div className="glass-card rounded-2xl p-6 md:p-8 inline-block relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
           <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-neon-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-            <p className="text-sm text-dark-300">
+            <p className="text-sm text-gray-400">
               Powered by{' '}
-              <span className="text-neon-blue font-semibold">Monaco Editor</span>
+              <span className="text-cyan-400 font-semibold">Monaco Editor</span>
             </p>
           </div>
-          <span className="text-dark-400 hidden md:inline">•</span>
-          <p className="text-sm text-dark-300">
-            Made with <span className="text-neon-pink animate-pulse inline-block">❤️</span> for developers
+          <span className="text-gray-500 hidden md:inline">•</span>
+          <p className="text-sm text-gray-400">
+            Made with <span className="text-pink-400 animate-pulse inline-block">❤️</span> for developers
           </p>
         </div>
         <div className="mt-3 flex items-center justify-center gap-3">

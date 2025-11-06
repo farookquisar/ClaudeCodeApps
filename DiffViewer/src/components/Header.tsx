@@ -40,10 +40,10 @@ export const Header = ({ theme, onToggleTheme }: HeaderProps) => {
                 </div>
               </div>
             </div>
-            <p className="text-sm md:text-base text-dark-300 leading-relaxed max-w-2xl">
+            <p className="text-sm md:text-base text-gray-400 leading-relaxed max-w-2xl">
               Professional code comparison powered by{' '}
-              <span className="text-neon-blue font-semibold">Monaco Editor</span>
-              <span className="text-dark-400 mx-2">•</span>
+              <span className="text-cyan-400 font-semibold">Monaco Editor</span>
+              <span className="text-gray-500 mx-2">•</span>
               Compare, analyze, and visualize code differences with precision
             </p>
           </div>
