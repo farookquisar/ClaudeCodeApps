@@ -140,7 +140,7 @@
   /* Loading Spinner */
   .loading {
     @apply inline-block w-5 h-5;
-    @apply border-3 border-primary-300;
+    @apply border-4 border-primary-300;
     @apply border-t-primary-600;
     @apply rounded-full;
     @apply animate-spin;
