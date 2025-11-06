@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    @apply bg-gradient-to-br from-gray-50 via-white to-gray-50;
+    @apply dark:from-gray-900 dark:via-gray-800 dark:to-gray-900;
+    @apply text-gray-900 dark:text-gray-100;
+    @apply min-h-screen overflow-x-hidden;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800 rounded-md;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary-400/50 dark:bg-primary-500/50 rounded-md;
+    @apply hover:bg-primary-500/70 dark:hover:bg-primary-400/70;
+    @apply transition-colors;
+  }
+}
+
+@layer components {
+  /* Glass Card Effect */
+  .glass-card {
+    @apply bg-white/70 dark:bg-gray-800/70;
+    @apply backdrop-blur-xl backdrop-saturate-150;
+    @apply border border-white/20 dark:border-gray-700/50;
+    @apply shadow-xl shadow-gray-200/50 dark:shadow-gray-900/50;
+  }
+
+  /* Button Base */
+  .btn {
+    @apply relative overflow-hidden;
+    @apply transition-all duration-300 ease-in-out;
+    @apply active:scale-95;
+  }
+
+  .btn::before {
+    content: '';
+    @apply absolute top-1/2 left-1/2;
+    @apply w-0 h-0 rounded-full;
+    @apply bg-white/20;
+    @apply -translate-x-1/2 -translate-y-1/2;
+    @apply transition-all duration-500;
+  }
+
+  .btn:active::before {
+    @apply w-80 h-80;
+  }
+
+  /* Monaco Container */
+  .monaco-container {
+    @apply rounded-xl overflow-hidden;
+    @apply border border-gray-200 dark:border-gray-700;
+    @apply transition-all duration-300;
+  }
+
+  .monaco-container:hover {
+    @apply shadow-lg shadow-primary-200/50 dark:shadow-primary-900/50;
+  }
+
+  /* Input Styles */
+  .input-field {
+    @apply w-full px-4 py-2.5 rounded-xl;
+    @apply border-2 border-gray-200 dark:border-gray-700;
+    @apply bg-white dark:bg-gray-800;
+    @apply text-gray-900 dark:text-gray-100;
+    @apply focus:border-primary-500 focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-900;
+    @apply outline-none transition-all;
+    @apply font-medium;
+  }
+
+  /* Select Dropdown */
+  select.input-field {
+    @apply bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20stroke%3D%22%236B7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22M6%208l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')];
+    @apply bg-no-repeat bg-[length:1.5em_1.5em] bg-[right_0.5rem_center];
+    @apply pr-10;
+  }
+
+  /* Textarea */
+  .textarea-field {
+    @apply input-field resize-none font-mono text-sm;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 via-secondary-500 to-accent-500;
+    @apply bg-clip-text text-transparent;
+  }
+
+  /* Animated Background Orbs */
+  .bg-orb {
+    @apply absolute rounded-full blur-3xl opacity-30;
+    @apply animate-float;
+  }
+
+  .bg-orb-1 {
+    @apply w-96 h-96 bg-gradient-to-br from-primary-300 to-secondary-300;
+    @apply -top-48 -right-48;
+  }
+
+  .bg-orb-2 {
+    @apply w-80 h-80 bg-gradient-to-br from-accent-300 to-primary-300;
+    @apply -bottom-40 -left-40;
+    animation-delay: -10s;
+  }
+}
+
+@layer utilities {
+  /* Fade In Animation */
+  .fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Loading Spinner */
+  .loading {
+    @apply inline-block w-5 h-5;
+    @apply border-3 border-primary-300;
+    @apply border-t-primary-600;
+    @apply rounded-full;
+    @apply animate-spin;
+  }
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .bg-orb-1 {
+    @apply w-72 h-72;
+  }
+
+  .bg-orb-2 {
+    @apply w-64 h-64;
+  }
+}
