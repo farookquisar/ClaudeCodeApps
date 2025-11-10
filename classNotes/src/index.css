@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Markdown editor customization */
+.EasyMDEContainer {
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.EasyMDEContainer .CodeMirror {
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 8px;
+  min-height: 400px;
+}
+
+.editor-toolbar {
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.editor-toolbar button {
+  color: #374151 !important;
+}
+
+.editor-toolbar button:hover {
+  background-color: #e5e7eb !important;
+  border-color: #d1d5db !important;
+}
+
+.editor-toolbar.fullscreen {
+  z-index: 9999;
+}
+
+.CodeMirror-fullscreen {
+  z-index: 9999;
+}
+
+/* Zen mode styles */
+.zen-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.zen-mode .EasyMDEContainer .CodeMirror {
+  min-height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+}
