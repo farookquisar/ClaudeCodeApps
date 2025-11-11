@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theravadu - Family Tree App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Color System - Easy to customize */
+        :root {
+            --primary: #5FA1E3;
+            --primary-dark: #4A8CD1;
+            --secondary: #69DECA;
+            --accent: #F4AD49;
+            --danger: #EF4658;
+            --success: #69DE92;
+            --warning: #F4AD49;
+            --dark: #2F3239;
+            --dark-alt: #3C4650;
+            --light: #FFFFFF;
+            --light-gray: #EEEEEE;
+            --text-primary: #2F3239;
+            --text-secondary: #666666;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --border: rgba(187, 187, 187, 0.3);
+            --shadow: rgba(0, 0, 0, 0.08);
+            --shadow-md: rgba(0, 0, 0, 0.12);
+            --shadow-lg: rgba(0, 0, 0, 0.16);
+            --gradient-primary: linear-gradient(135deg, #5FA1E3 0%, #6757E2 100%);
+            --gradient-secondary: linear-gradient(135deg, #69DECA 0%, #5FA1E3 100%);
+            --gradient-warm: linear-gradient(135deg, #F4AD49 0%, #E76549 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f0f7 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--light);
+            box-shadow: 4px 0 24px var(--shadow-md);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            background: var(--gradient-primary);
+            color: var(--light);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.5rem 0;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(90deg, rgba(95, 161, 227, 0.1) 0%, transparent 100%);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(95, 161, 227, 0.15) 0%, transparent 100%);
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            width: 24px;
+            margin-right: 1rem;
+            font-size: 1.25rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Header */
+        .header {
+            background: var(--light);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 12px var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 2rem;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .stat-card.success::before {
+            background: var(--gradient-secondary);
+        }
+
+        .stat-card.warning::before {
+            background: var(--gradient-warm);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, rgba(95, 161, 227, 0.15) 0%, rgba(103, 87, 226, 0.15) 100%);
+            color: var(--primary);
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, rgba(105, 222, 202, 0.15) 0%, rgba(105, 222, 146, 0.15) 100%);
+            color: var(--secondary);
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, rgba(244, 173, 73, 0.15) 0%, rgba(231, 101, 77, 0.15) 100%);
+            color: var(--warning);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--light);
+            box-shadow: 0 4px 12px rgba(95, 161, 227, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(95, 161, 227, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--gradient-secondary);
+            color: var(--light);
+            box-shadow: 0 4px 12px rgba(105, 222, 202, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(105, 222, 202, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--light);
+        }
+
+        /* Family Tree Styles */
+        .family-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .family-card {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .family-card:hover {
+            box-shadow: 0 8px 30px var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        .family-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .family-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light);
+            font-size: 1.75rem;
+        }
+
+        .family-info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .family-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .members-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--light-gray);
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .member-item:hover {
+            background: rgba(95, 161, 227, 0.1);
+        }
+
+        .member-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light);
+            font-weight: 600;
+        }
+
+        .member-details {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .member-role {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Payment Styles */
+        .payment-table-container {
+            background: var(--light);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .payment-table thead {
+            background: var(--gradient-primary);
+            color: var(--light);
+        }
+
+        .payment-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .payment-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .payment-table tbody tr:hover {
+            background: rgba(95, 161, 227, 0.05);
+        }
+
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-paid {
+            background: rgba(105, 222, 146, 0.2);
+            color: #2d8659;
+        }
+
+        .status-pending {
+            background: rgba(244, 173, 73, 0.2);
+            color: #b57220;
+        }
+
+        .status-overdue {
+            background: rgba(239, 70, 88, 0.2);
+            color: #c02e40;
+        }
+
+        /* Event Styles */
+        .event-timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin-top: 2rem;
+        }
+
+        .event-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .event-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .event-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid var(--light);
+            box-shadow: 0 0 0 3px var(--light-gray);
+        }
+
+        .event-card {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            box-shadow: 0 8px 30px var(--shadow-md);
+            transform: translateX(4px);
+        }
+
+        .event-date {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--gradient-primary);
+            color: var(--light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .event-attendees {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .attendees-avatars {
+            display: flex;
+            margin-right: 0.5rem;
+        }
+
+        .attendees-avatars .member-avatar {
+            margin-left: -10px;
+            border: 2px solid var(--light);
+        }
+
+        .attendees-avatars .member-avatar:first-child {
+            margin-left: 0;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--light);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--light-gray);
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(95, 161, 227, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .header-title {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .family-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-table-container {
+                overflow-x: auto;
+            }
+
+            .payment-table {
+                min-width: 600px;
+            }
+
+            .event-timeline {
+                padding-left: 1.5rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Utility Classes */
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 2rem; }
+
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+
+        .flex { display: flex; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .flex-gap { gap: 1rem; }
+
+        .text-center { text-align: center; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">
+                <i class="fas fa-leaf"></i> Theravadu
+            </h1>
+            <p style="opacity: 0.9; font-size: 0.9rem;">Family Tree Management</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a class="nav-item active" data-view="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a class="nav-item" data-view="family-tree">
+                <i class="fas fa-sitemap"></i>
+                <span>Family Tree</span>
+            </a>
+            <a class="nav-item" data-view="payments">
+                <i class="fas fa-wallet"></i>
+                <span>Payments</span>
+            </a>
+            <a class="nav-item" data-view="events">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Events</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Header -->
+        <header class="header">
+            <div class="flex" style="align-items: center; gap: 1rem;">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2 class="header-title" id="pageTitle">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </h2>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="showAddMemberModal()">
+                    <i class="fas fa-plus"></i>
+                    Add Member
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Dashboard View -->
+            <div class="view active" id="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value">127</div>
+                        <div class="stat-label">Total Family Members</div>
+                    </div>
+
+                    <div class="stat-card success">
+                        <div class="stat-icon success">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                        <div class="stat-value">$45,280</div>
+                        <div class="stat-label">Total Contributions</div>
+                    </div>
+
+                    <div class="stat-card warning">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Upcoming Events</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Family Branches</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+                    <!-- Recent Activity -->
+                    <div class="card">
+                        <div class="card-header">Recent Activity</div>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--light-gray); border-radius: 10px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-secondary); display: flex; align-items: center; justify-content: center; color: var(--light);">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--text-primary);">New Member Added</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-secondary);">Sarah Johnson joined Family A</div>
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">2h ago</div>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--light-gray); border-radius: 10px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: var(--light);">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--text-primary);">Payment Received</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-secondary);">Monthly contribution from Michael</div>
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">5h ago</div>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--light-gray); border-radius: 10px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-warm); display: flex; align-items: center; justify-content: center; color: var(--light);">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--text-primary);">Event Created</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-secondary);">Family Reunion scheduled for Dec 15</div>
+                                </div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">1d ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Summary -->
+                    <div class="card">
+                        <div class="card-header">This Month's Payments</div>
+                        <div style="margin: 1.5rem 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span style="color: var(--text-secondary);">Collection Progress</span>
+                                <span style="font-weight: 600; color: var(--primary);">82/127 paid</span>
+                            </div>
+                            <div style="height: 12px; background: var(--light-gray); border-radius: 10px; overflow: hidden;">
+                                <div style="height: 100%; width: 65%; background: var(--gradient-secondary); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+                            <div style="padding: 1rem; background: rgba(105, 222, 146, 0.1); border-radius: 10px;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--secondary);">82</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">Paid</div>
+                            </div>
+                            <div style="padding: 1rem; background: rgba(244, 173, 73, 0.1); border-radius: 10px;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);">35</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">Pending</div>
+                            </div>
+                            <div style="padding: 1rem; background: rgba(239, 70, 88, 0.1); border-radius: 10px;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: var(--danger);">10</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">Overdue</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Family Tree View -->
+            <div class="view" id="family-tree">
+                <div class="flex-between mb-3">
+                    <div>
+                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Family Branches</h3>
+                        <p style="color: var(--text-secondary);">Manage and view all family branches and members</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAddFamilyModal()">
+                        <i class="fas fa-plus"></i>
+                        Add Family
+                    </button>
+                </div>
+
+                <div class="family-grid">
+                    <!-- Family A -->
+                    <div class="family-card">
+                        <div class="family-header">
+                            <div class="family-icon" style="background: linear-gradient(135deg, #5FA1E3 0%, #6757E2 100%);">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="family-info">
+                                <h3>Family A - Anderson</h3>
+                                <p>28 members</p>
+                            </div>
+                        </div>
+                        <div class="members-list">
+                            <div class="member-item">
+                                <div class="member-avatar">JA</div>
+                                <div class="member-details">
+                                    <div class="member-name">John Anderson</div>
+                                    <div class="member-role">Head of Family</div>
+                                </div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-avatar">MA</div>
+                                <div class="member-details">
+                                    <div class="member-name">Mary Anderson</div>
+                                    <div class="member-role">Member</div>
+                                </div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-avatar">SA</div>
+                                <div class="member-details">
+                                    <div class="member-name">Sarah Anderson</div>
+                                    <div class="member-role">Member</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline mt-2" style="width: 100%;" onclick="showFamilyDetails('A')">
+                            View All Members
+                        </button>
+                    </div>
+
+                    <!-- Family B -->
+                    <div class="family-card">
+                        <div class="family-header">
+                            <div class="family-icon" style="background: linear-gradient(135deg, #69DECA 0%, #5FA1E3 100%);">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="family-info">
+                                <h3>Family B - Baker</h3>
+                                <p>23 members</p>
+                            </div>
+                        </div>
+                        <div class="members-list">
+                            <div class="member-item">
+                                <div class="member-avatar" style="background: linear-gradient(135deg, #69DECA 0%, #5FA1E3 100%);">RB</div>
+                                <div class="member-details">
+                                    <div class="member-name">Robert Baker</div>
+                                    <div class="member-role">Head of Family</div>
+                                </div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-avatar" style="background: linear-gradient(135deg, #69DECA 0%, #5FA1E3 100%);">EB</div>
+                                <div class="member-details">
+                                    <div class="member-name">Emma Baker</div>
+                                    <div class="member-role">Member</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline mt-2" style="width: 100%;" onclick="showFamilyDetails('B')">
+                            View All Members
+                        </button>
+                    </div>
+
+                    <!-- Family C -->
+                    <div class="family-card">
+                        <div class="family-header">
+                            <div class="family-icon" style="background: linear-gradient(135deg, #F4AD49 0%, #E76549 100%);">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="family-info">
+                                <h3>Family C - Chen</h3>
+                                <p>31 members</p>
+                            </div>
+                        </div>
+                        <div class="members-list">
+                            <div class="member-item">
+                                <div class="member-avatar" style="background: linear-gradient(135deg, #F4AD49 0%, #E76549 100%);">LC</div>
+                                <div class="member-details">
+                                    <div class="member-name">Li Chen</div>
+                                    <div class="member-role">Head of Family</div>
+                                </div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-avatar" style="background: linear-gradient(135deg, #F4AD49 0%, #E76549 100%);">WC</div>
+                                <div class="member-details">
+                                    <div class="member-name">Wei Chen</div>
+                                    <div class="member-role">Member</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline mt-2" style="width: 100%;" onclick="showFamilyDetails('C')">
+                            View All Members
+                        </button>
+                    </div>
+
+                    <!-- Family D -->
+                    <div class="family-card">
+                        <div class="family-header">
+                            <div class="family-icon" style="background: linear-gradient(135deg, #6757E2 0%, #E76549 100%);">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="family-info">
+                                <h3>Family D - Davis</h3>
+                                <p>26 members</p>
+                            </div>
+                        </div>
+                        <div class="members-list">
+                            <div class="member-item">
+                                <div class="member-avatar" style="background: linear-gradient(135deg, #6757E2 0%, #E76549 100%);">DD</div>
+                                <div class="member-details">
+                                    <div class="member-name">David Davis</div>
+                                    <div class="member-role">Head of Family</div>
+                                </div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-avatar" style="background: linear-gradient(135deg, #6757E2 0%, #E76549 100%);">LD</div>
+                                <div class="member-details">
+                                    <div class="member-name">Laura Davis</div>
+                                    <div class="member-role">Member</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline mt-2" style="width: 100%;" onclick="showFamilyDetails('D')">
+                            View All Members
+                        </button>
+                    </div>
+
+                    <!-- Family E -->
+                    <div class="family-card">
+                        <div class="family-header">
+                            <div class="family-icon" style="background: linear-gradient(135deg, #69DE92 0%, #5FA1E3 100%);">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="family-info">
+                                <h3>Family E - Evans</h3>
+                                <p>19 members</p>
+                            </div>
+                        </div>
+                        <div class="members-list">
+                            <div class="member-item">
+                                <div class="member-avatar" style="background: linear-gradient(135deg, #69DE92 0%, #5FA1E3 100%);">ME</div>
+                                <div class="member-details">
+                                    <div class="member-name">Michael Evans</div>
+                                    <div class="member-role">Head of Family</div>
+                                </div>
+                            </div>
+                            <div class="member-item">
+                                <div class="member-avatar" style="background: linear-gradient(135deg, #69DE92 0%, #5FA1E3 100%);">OE</div>
+                                <div class="member-details">
+                                    <div class="member-name">Olivia Evans</div>
+                                    <div class="member-role">Member</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline mt-2" style="width: 100%;" onclick="showFamilyDetails('E')">
+                            View All Members
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payments View -->
+            <div class="view" id="payments">
+                <div class="flex-between mb-3">
+                    <div>
+                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Payment Tracking</h3>
+                        <p style="color: var(--text-secondary);">Monitor monthly contributions from all family members</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="showRecordPaymentModal()">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Record Payment
+                    </button>
+                </div>
+
+                <div class="stats-grid mb-4">
+                    <div class="stat-card success">
+                        <div class="stat-value" style="color: var(--secondary);">$38,560</div>
+                        <div class="stat-label">Collected This Month</div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-value" style="color: var(--warning);">$6,720</div>
+                        <div class="stat-label">Pending Amount</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: var(--primary);">64.6%</div>
+                        <div class="stat-label">Collection Rate</div>
+                    </div>
+                </div>
+
+                <div class="payment-table-container">
+                    <table class="payment-table">
+                        <thead>
+                            <tr>
+                                <th>Member Name</th>
+                                <th>Family</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Last Payment</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">JA</div>
+                                        <span style="font-weight: 600;">John Anderson</span>
+                                    </div>
+                                </td>
+                                <td>Family A</td>
+                                <td style="font-weight: 600;">$50.00</td>
+                                <td><span class="status-badge status-paid">Paid</span></td>
+                                <td>Nov 10, 2025</td>
+                                <td>
+                                    <button class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="fas fa-receipt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">MA</div>
+                                        <span style="font-weight: 600;">Mary Anderson</span>
+                                    </div>
+                                </td>
+                                <td>Family A</td>
+                                <td style="font-weight: 600;">$50.00</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>Oct 15, 2025</td>
+                                <td>
+                                    <button class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="fas fa-bell"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">RB</div>
+                                        <span style="font-weight: 600;">Robert Baker</span>
+                                    </div>
+                                </td>
+                                <td>Family B</td>
+                                <td style="font-weight: 600;">$50.00</td>
+                                <td><span class="status-badge status-paid">Paid</span></td>
+                                <td>Nov 11, 2025</td>
+                                <td>
+                                    <button class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="fas fa-receipt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">EB</div>
+                                        <span style="font-weight: 600;">Emma Baker</span>
+                                    </div>
+                                </td>
+                                <td>Family B</td>
+                                <td style="font-weight: 600;">$50.00</td>
+                                <td><span class="status-badge status-overdue">Overdue</span></td>
+                                <td>Sep 20, 2025</td>
+                                <td>
+                                    <button class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">LC</div>
+                                        <span style="font-weight: 600;">Li Chen</span>
+                                    </div>
+                                </td>
+                                <td>Family C</td>
+                                <td style="font-weight: 600;">$50.00</td>
+                                <td><span class="status-badge status-paid">Paid</span></td>
+                                <td>Nov 09, 2025</td>
+                                <td>
+                                    <button class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="fas fa-receipt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">WC</div>
+                                        <span style="font-weight: 600;">Wei Chen</span>
+                                    </div>
+                                </td>
+                                <td>Family C</td>
+                                <td style="font-weight: 600;">$50.00</td>
+                                <td><span class="status-badge status-paid">Paid</span></td>
+                                <td>Nov 08, 2025</td>
+                                <td>
+                                    <button class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="fas fa-receipt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">DD</div>
+                                        <span style="font-weight: 600;">David Davis</span>
+                                    </div>
+                                </td>
+                                <td>Family D</td>
+                                <td style="font-weight: 600;">$50.00</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>Oct 10, 2025</td>
+                                <td>
+                                    <button class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="fas fa-bell"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">LD</div>
+                                        <span style="font-weight: 600;">Laura Davis</span>
+                                    </div>
+                                </td>
+                                <td>Family D</td>
+                                <td style="font-weight: 600;">$50.00</td>
+                                <td><span class="status-badge status-paid">Paid</span></td>
+                                <td>Nov 07, 2025</td>
+                                <td>
+                                    <button class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="fas fa-receipt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">ME</div>
+                                        <span style="font-weight: 600;">Michael Evans</span>
+                                    </div>
+                                </td>
+                                <td>Family E</td>
+                                <td style="font-weight: 600;">$50.00</td>
+                                <td><span class="status-badge status-paid">Paid</span></td>
+                                <td>Nov 11, 2025</td>
+                                <td>
+                                    <button class="btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 8px;">
+                                        <i class="fas fa-receipt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Events View -->
+            <div class="view" id="events">
+                <div class="flex-between mb-3">
+                    <div>
+                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Family Events</h3>
+                        <p style="color: var(--text-secondary);">Schedule and manage family gatherings and celebrations</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAddEventModal()">
+                        <i class="fas fa-plus"></i>
+                        Create Event
+                    </button>
+                </div>
+
+                <div class="event-timeline">
+                    <div class="event-item">
+                        <div class="event-card">
+                            <span class="event-date">
+                                <i class="fas fa-calendar"></i> December 15, 2025
+                            </span>
+                            <h4 class="event-title">Annual Family Reunion</h4>
+                            <p class="event-description">
+                                Join us for our annual family reunion at Central Park. Enjoy food, games, and quality time with loved ones.
+                            </p>
+                            <div class="event-attendees">
+                                <span style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    <i class="fas fa-users"></i> 87 attending
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-outline" style="margin-right: 0.5rem;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-check"></i> RSVP
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-item">
+                        <div class="event-card">
+                            <span class="event-date" style="background: var(--gradient-secondary);">
+                                <i class="fas fa-calendar"></i> January 20, 2026
+                            </span>
+                            <h4 class="event-title">New Year Celebration</h4>
+                            <p class="event-description">
+                                Welcome the new year with a grand celebration featuring dinner, music, and fireworks at the family estate.
+                            </p>
+                            <div class="event-attendees">
+                                <span style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    <i class="fas fa-users"></i> 102 attending
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-outline" style="margin-right: 0.5rem;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-check"></i> RSVP
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-item">
+                        <div class="event-card">
+                            <span class="event-date" style="background: var(--gradient-warm);">
+                                <i class="fas fa-calendar"></i> February 14, 2026
+                            </span>
+                            <h4 class="event-title">Family Valentine's Day Picnic</h4>
+                            <p class="event-description">
+                                A special day for families to enjoy together with outdoor activities, crafts for kids, and a potluck lunch.
+                            </p>
+                            <div class="event-attendees">
+                                <span style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    <i class="fas fa-users"></i> 65 attending
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-outline" style="margin-right: 0.5rem;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-check"></i> RSVP
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-item">
+                        <div class="event-card">
+                            <span class="event-date">
+                                <i class="fas fa-calendar"></i> March 8, 2026
+                            </span>
+                            <h4 class="event-title">Spring Garden Party</h4>
+                            <p class="event-description">
+                                Celebrate spring with a beautiful garden party featuring live music, refreshments, and children's activities.
+                            </p>
+                            <div class="event-attendees">
+                                <span style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    <i class="fas fa-users"></i> 54 attending
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-outline" style="margin-right: 0.5rem;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-check"></i> RSVP
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Member Modal -->
+    <div class="modal" id="addMemberModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Family Member</h3>
+                <button class="modal-close" onclick="closeModal('addMemberModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="handleAddMember(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Family Branch</label>
+                    <select class="form-select" required>
+                        <option value="">Select family</option>
+                        <option value="A">Family A - Anderson</option>
+                        <option value="B">Family B - Baker</option>
+                        <option value="C">Family C - Chen</option>
+                        <option value="D">Family D - Davis</option>
+                        <option value="E">Family E - Evans</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select class="form-select" required>
+                        <option value="">Select role</option>
+                        <option value="head">Head of Family</option>
+                        <option value="member">Member</option>
+                        <option value="sub-member">Sub Member</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="tel" class="form-input" placeholder="+1 (555) 000-0000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monthly Contribution</label>
+                    <input type="number" class="form-input" placeholder="50.00" step="0.01">
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('addMemberModal')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-plus"></i>
+                        Add Member
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Family Modal -->
+    <div class="modal" id="addFamilyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Family Branch</h3>
+                <button class="modal-close" onclick="closeModal('addFamilyModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="handleAddFamily(event)">
+                <div class="form-group">
+                    <label class="form-label">Family Name</label>
+                    <input type="text" class="form-input" placeholder="Enter family name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" placeholder="Enter family description"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('addFamilyModal')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-plus"></i>
+                        Add Family
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Record Payment Modal -->
+    <div class="modal" id="recordPaymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Record Payment</h3>
+                <button class="modal-close" onclick="closeModal('recordPaymentModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="handleRecordPayment(event)">
+                <div class="form-group">
+                    <label class="form-label">Member</label>
+                    <select class="form-select" required>
+                        <option value="">Select member</option>
+                        <option value="1">John Anderson - Family A</option>
+                        <option value="2">Mary Anderson - Family A</option>
+                        <option value="3">Robert Baker - Family B</option>
+                        <option value="4">Emma Baker - Family B</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Amount</label>
+                    <input type="number" class="form-input" placeholder="50.00" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Payment Date</label>
+                    <input type="date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <select class="form-select" required>
+                        <option value="">Select method</option>
+                        <option value="cash">Cash</option>
+                        <option value="check">Check</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="online">Online Payment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" placeholder="Add any notes or remarks"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('recordPaymentModal')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-secondary" style="flex: 1;">
+                        <i class="fas fa-check"></i>
+                        Record Payment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div class="modal" id="addEventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Event</h3>
+                <button class="modal-close" onclick="closeModal('addEventModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="handleAddEvent(event)">
+                <div class="form-group">
+                    <label class="form-label">Event Name</label>
+                    <input type="text" class="form-input" placeholder="Enter event name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Event Date</label>
+                    <input type="date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" placeholder="Enter location">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" placeholder="Enter event description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Invite Families</label>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" value="A" checked>
+                            <span>Family A - Anderson</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" value="B" checked>
+                            <span>Family B - Baker</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" value="C" checked>
+                            <span>Family C - Chen</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" value="D" checked>
+                            <span>Family D - Davis</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" value="E" checked>
+                            <span>Family E - Evans</span>
+                        </label>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('addEventModal')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-plus"></i>
+                        Create Event
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Navigation and UI Logic
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const menuToggle = document.getElementById('menuToggle');
+        const navItems = document.querySelectorAll('.nav-item');
+        const views = document.querySelectorAll('.view');
+        const pageTitle = document.getElementById('pageTitle');
+
+        // Menu toggle for mobile
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Navigation logic
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const viewName = item.getAttribute('data-view');
+
+                // Update active nav item
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+
+                // Show corresponding view
+                views.forEach(view => view.classList.remove('active'));
+                document.getElementById(viewName).classList.add('active');
+
+                // Update page title
+                const icon = item.querySelector('i').className;
+                const title = item.querySelector('span').textContent;
+                pageTitle.innerHTML = `<i class="${icon}"></i> ${title}`;
+
+                // Close sidebar on mobile
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+        // Modal functions
+        function showAddMemberModal() {
+            document.getElementById('addMemberModal').classList.add('active');
+        }
+
+        function showAddFamilyModal() {
+            document.getElementById('addFamilyModal').classList.add('active');
+        }
+
+        function showRecordPaymentModal() {
+            document.getElementById('recordPaymentModal').classList.add('active');
+        }
+
+        function showAddEventModal() {
+            document.getElementById('addEventModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Form handlers
+        function handleAddMember(event) {
+            event.preventDefault();
+            alert('Member added successfully! (This is a demo)');
+            closeModal('addMemberModal');
+        }
+
+        function handleAddFamily(event) {
+            event.preventDefault();
+            alert('Family branch added successfully! (This is a demo)');
+            closeModal('addFamilyModal');
+        }
+
+        function handleRecordPayment(event) {
+            event.preventDefault();
+            alert('Payment recorded successfully! (This is a demo)');
+            closeModal('recordPaymentModal');
+        }
+
+        function handleAddEvent(event) {
+            event.preventDefault();
+            alert('Event created successfully! (This is a demo)');
+            closeModal('addEventModal');
+        }
+
+        function showFamilyDetails(family) {
+            alert(`Viewing all members of Family ${family} (This is a demo)`);
+        }
+
+        // Initialize
+        console.log('Theravadu Family Tree App initialized');
+    </script>
+</body>
+</html>
