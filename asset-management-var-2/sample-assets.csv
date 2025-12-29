@@ -1,0 +1,11 @@
+Name,Asset ID,Category,Status,Location,Value
+MacBook Pro 16,COMP-101,computers,active,Office A - Desk 5,2500
+Standing Desk,FURN-102,furniture,in-use,Office A - Desk 5,800
+iPhone 14 Pro,EQUIP-103,equipment,active,Mobile,1200
+Ford F-150,VEH-104,vehicles,active,Parking Lot A,45000
+Adobe Creative Cloud,SOFT-105,software,active,Cloud,600
+Conference Table,FURN-106,furniture,active,Meeting Room 1,1500
+Dell Monitor 27,EQUIP-107,equipment,in-use,Office B - Desk 10,400
+Toyota Prius,VEH-108,vehicles,maintenance,Service Center,32000
+Microsoft Windows 11,SOFT-109,software,active,IT Department,150
+Ergonomic Chair,FURN-110,furniture,active,Office C - Desk 3,350

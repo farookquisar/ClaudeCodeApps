@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssetVault Pro - Asset Lifecycle Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>📦 AssetVault Pro</h1>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn active" data-page="dashboard">📊 Dashboard</button>
+                <button class="nav-btn" data-page="assets">📦 Assets</button>
+                <button class="nav-btn" data-page="tasks">📋 Tasks</button>
+                <button class="nav-btn" data-page="maintenance">🔧 Maintenance</button>
+                <button class="nav-btn" data-page="audit">🔍 Audit</button>
+                <button class="nav-btn" data-page="reports">📈 Reports</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page active">
+            <div class="page-header">
+                <h2>📊 Dashboard Overview</h2>
+                <p>Your asset management at a glance</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card stat-purple">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-content">
+                        <h3 id="stat-total-assets">0</h3>
+                        <p>Total Assets</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-green">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <h3 id="stat-active-assets">0</h3>
+                        <p>Active Assets</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-orange">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-content">
+                        <h3 id="stat-pending-tasks">0</h3>
+                        <p>Pending Tasks</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-blue">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <h3 id="stat-total-value">$0</h3>
+                        <p>Total Value</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Asset Distribution by Category</h3>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Asset Status Overview</h3>
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card">
+                <h3>Recent Activity</h3>
+                <div id="recent-activity" class="activity-list"></div>
+            </div>
+        </div>
+
+        <!-- Assets Page -->
+        <div id="page-assets" class="page">
+            <div class="page-header">
+                <h2>📦 Asset Register</h2>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showAddAssetModal()">+ Add Asset</button>
+                    <button class="btn btn-secondary" onclick="showBulkEntryModal()">📝 Bulk Entry</button>
+                    <button class="btn btn-secondary" onclick="showImportCSVModal()">📄 Import CSV</button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-bar">
+                <input type="text" id="asset-search" class="search-input" placeholder="🔍 Search assets...">
+                <select id="category-filter" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="computers">💻 Computers</option>
+                    <option value="furniture">🪑 Furniture</option>
+                    <option value="vehicles">🚗 Vehicles</option>
+                    <option value="equipment">⚙️ Equipment</option>
+                    <option value="software">💿 Software</option>
+                </select>
+                <select id="status-filter" class="filter-select">
+                    <option value="">All Statuses</option>
+                    <option value="active">✅ Active</option>
+                    <option value="in-use">🔵 In Use</option>
+                    <option value="maintenance">🔧 Maintenance</option>
+                    <option value="disposed">❌ Disposed</option>
+                </select>
+                <button class="btn btn-ghost" onclick="clearFilters()">Clear Filters</button>
+            </div>
+
+            <!-- Assets Table -->
+            <div class="table-container">
+                <table class="neo-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Location</th>
+                            <th>Value</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assets-table-body">
+                        <!-- Assets will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tasks Page -->
+        <div id="page-tasks" class="page">
+            <div class="page-header">
+                <h2>📋 Task Management</h2>
+                <button class="btn btn-primary" onclick="showCreateTaskModal()">+ Create Task</button>
+            </div>
+
+            <!-- Task Status Columns -->
+            <div class="kanban-board">
+                <div class="kanban-column">
+                    <div class="column-header header-started">
+                        <h3>⏳ Started</h3>
+                        <span class="count" id="count-started">0</span>
+                    </div>
+                    <div id="tasks-started" class="task-list"></div>
+                </div>
+                <div class="kanban-column">
+                    <div class="column-header header-reached">
+                        <h3>🚗 Reached</h3>
+                        <span class="count" id="count-reached">0</span>
+                    </div>
+                    <div id="tasks-reached" class="task-list"></div>
+                </div>
+                <div class="kanban-column">
+                    <div class="column-header header-working">
+                        <h3>⚙️ Work Started</h3>
+                        <span class="count" id="count-working">0</span>
+                    </div>
+                    <div id="tasks-working" class="task-list"></div>
+                </div>
+                <div class="kanban-column">
+                    <div class="column-header header-finished">
+                        <h3>✅ Finished</h3>
+                        <span class="count" id="count-finished">0</span>
+                    </div>
+                    <div id="tasks-finished" class="task-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Maintenance Page -->
+        <div id="page-maintenance" class="page">
+            <div class="page-header">
+                <h2>🔧 Maintenance & Warranties</h2>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showAddMaintenanceModal()">+ Schedule Maintenance</button>
+                    <button class="btn btn-secondary" onclick="showAddWarrantyModal()">📜 Add Warranty</button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="maintenance-tab">🔧 Maintenance</button>
+                <button class="tab-btn" data-tab="warranties-tab">📜 Warranties</button>
+                <button class="tab-btn" data-tab="contracts-tab">📋 Contracts</button>
+            </div>
+
+            <!-- Maintenance Tab -->
+            <div id="maintenance-tab" class="tab-content active">
+                <div class="table-container">
+                    <table class="neo-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Type</th>
+                                <th>Priority</th>
+                                <th>Scheduled</th>
+                                <th>Status</th>
+                                <th>Cost</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maintenance-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Warranties Tab -->
+            <div id="warranties-tab" class="tab-content">
+                <div class="table-container">
+                    <table class="neo-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Provider</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="warranties-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Contracts Tab -->
+            <div id="contracts-tab" class="tab-content">
+                <div class="table-container">
+                    <table class="neo-table">
+                        <thead>
+                            <tr>
+                                <th>Contract Name</th>
+                                <th>Vendor</th>
+                                <th>Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Value</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contracts-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audit Page -->
+        <div id="page-audit" class="page">
+            <div class="page-header">
+                <h2>🔍 Asset Audit</h2>
+                <button class="btn btn-primary" onclick="startNewAudit()">+ Start New Audit</button>
+            </div>
+
+            <!-- Audit Progress -->
+            <div class="card" id="audit-progress-card" style="display: none;">
+                <h3>Current Audit Progress</h3>
+                <div class="progress-bar">
+                    <div id="audit-progress-fill" class="progress-fill"></div>
+                </div>
+                <p id="audit-progress-text">0% Complete</p>
+            </div>
+
+            <!-- Audit Findings -->
+            <div class="findings-grid">
+                <div class="finding-card finding-missing">
+                    <div class="finding-icon">❌</div>
+                    <h3 id="missing-count">0</h3>
+                    <p>Missing Assets</p>
+                </div>
+                <div class="finding-card finding-discrepancy">
+                    <div class="finding-icon">⚠️</div>
+                    <h3 id="discrepancy-count">0</h3>
+                    <p>Discrepancies</p>
+                </div>
+                <div class="finding-card finding-unlisted">
+                    <div class="finding-icon">ℹ️</div>
+                    <h3 id="unlisted-count">0</h3>
+                    <p>Unlisted Assets</p>
+                </div>
+                <div class="finding-card finding-matched">
+                    <div class="finding-icon">✅</div>
+                    <h3 id="matched-count">0</h3>
+                    <p>Matched</p>
+                </div>
+            </div>
+
+            <!-- Audit History -->
+            <div class="card">
+                <h3>Audit History</h3>
+                <div class="table-container">
+                    <table class="neo-table">
+                        <thead>
+                            <tr>
+                                <th>Audit ID</th>
+                                <th>Date</th>
+                                <th>Auditor</th>
+                                <th>Assets Checked</th>
+                                <th>Findings</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-history-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div id="page-reports" class="page">
+            <div class="page-header">
+                <h2>📈 Reports & Analytics</h2>
+            </div>
+
+            <div class="reports-grid">
+                <div class="report-card" onclick="generateReport('valuation')">
+                    <div class="report-icon">💰</div>
+                    <h3>Asset Valuation Report</h3>
+                    <p>Complete asset value breakdown</p>
+                </div>
+                <div class="report-card" onclick="generateReport('maintenance')">
+                    <div class="report-icon">🔧</div>
+                    <h3>Maintenance Summary</h3>
+                    <p>All maintenance activities</p>
+                </div>
+                <div class="report-card" onclick="generateReport('depreciation')">
+                    <div class="report-icon">📉</div>
+                    <h3>Depreciation Analysis</h3>
+                    <p>Asset depreciation over time</p>
+                </div>
+                <div class="report-card" onclick="generateReport('utilization')">
+                    <div class="report-icon">📊</div>
+                    <h3>Utilization Report</h3>
+                    <p>Asset usage statistics</p>
+                </div>
+                <div class="report-card" onclick="generateReport('compliance')">
+                    <div class="report-icon">✅</div>
+                    <h3>Compliance & Audit</h3>
+                    <p>Audit trail and compliance</p>
+                </div>
+                <div class="report-card" onclick="generateReport('warranty')">
+                    <div class="report-icon">📜</div>
+                    <h3>Warranty & Contracts</h3>
+                    <p>Active warranties and contracts</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Add Asset Modal -->
+    <div id="modal-add-asset" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Asset</h2>
+                <button class="close-btn" onclick="closeModal('modal-add-asset')">&times;</button>
+            </div>
+            <form id="add-asset-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Asset Name</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Asset ID</label>
+                        <input type="text" name="assetId" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="category" required>
+                            <option value="computers">💻 Computers</option>
+                            <option value="furniture">🪑 Furniture</option>
+                            <option value="vehicles">🚗 Vehicles</option>
+                            <option value="equipment">⚙️ Equipment</option>
+                            <option value="software">💿 Software</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" required>
+                            <option value="active">✅ Active</option>
+                            <option value="in-use">🔵 In Use</option>
+                            <option value="maintenance">🔧 Maintenance</option>
+                            <option value="disposed">❌ Disposed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" name="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Purchase Date</label>
+                        <input type="date" name="purchaseDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Value ($)</label>
+                        <input type="number" name="value" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Assigned To</label>
+                        <input type="text" name="assignedTo">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-add-asset')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Asset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bulk Entry Modal -->
+    <div id="modal-bulk-entry" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Bulk Asset Entry</h2>
+                <button class="close-btn" onclick="closeModal('modal-bulk-entry')">&times;</button>
+            </div>
+            <div class="bulk-entry-container">
+                <button class="btn btn-secondary" onclick="addBulkRow()">+ Add Row</button>
+                <div id="bulk-entry-table" class="bulk-table"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal('modal-bulk-entry')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveBulkAssets()">Save All Assets</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import CSV Modal -->
+    <div id="modal-import-csv" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Import Assets from CSV</h2>
+                <button class="close-btn" onclick="closeModal('modal-import-csv')">&times;</button>
+            </div>
+            <div class="upload-area" id="csv-upload-area">
+                <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
+                <div class="upload-content" onclick="document.getElementById('csv-file-input').click()">
+                    <div class="upload-icon">📄</div>
+                    <h3>Drop CSV file here or click to browse</h3>
+                    <p>Expected format: Name, ID, Category, Status, Location, Value</p>
+                </div>
+            </div>
+            <div id="csv-preview" style="display: none;">
+                <h3>Preview</h3>
+                <div id="csv-preview-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal('modal-import-csv')">Cancel</button>
+                <button class="btn btn-primary" id="import-csv-btn" onclick="importCSV()" disabled>Import Assets</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Task Modal -->
+    <div id="modal-create-task" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Task</h2>
+                <button class="close-btn" onclick="closeModal('modal-create-task')">&times;</button>
+            </div>
+            <form id="create-task-form">
+                <div class="form-group">
+                    <label>Task Title</label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label>Task Type</label>
+                    <select name="type" required>
+                        <option value="transfer">🔄 Transfer</option>
+                        <option value="assignment">👤 Assignment</option>
+                        <option value="disposal">🗑️ Disposal</option>
+                        <option value="pricing">💰 Pricing Update</option>
+                        <option value="maintenance">🔧 Maintenance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Assign To</label>
+                    <input type="text" name="assignedTo" required>
+                </div>
+                <div class="form-group">
+                    <label>Related Asset</label>
+                    <select name="assetId" id="task-asset-select" required>
+                        <option value="">Select an asset...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Due Date</label>
+                    <input type="date" name="dueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="4"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-create-task')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Maintenance Modal -->
+    <div id="modal-add-maintenance" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Schedule Maintenance</h2>
+                <button class="close-btn" onclick="closeModal('modal-add-maintenance')">&times;</button>
+            </div>
+            <form id="add-maintenance-form">
+                <div class="form-group">
+                    <label>Asset</label>
+                    <select name="assetId" id="maintenance-asset-select" required>
+                        <option value="">Select an asset...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Maintenance Type</label>
+                    <input type="text" name="type" required placeholder="e.g., Routine Inspection, Repair, Upgrade">
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select name="priority" required>
+                        <option value="high">🔴 High</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="low">🟢 Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Scheduled Date</label>
+                    <input type="date" name="scheduledDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Estimated Cost ($)</label>
+                    <input type="number" name="cost" step="0.01">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-add-maintenance')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Warranty Modal -->
+    <div id="modal-add-warranty" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Warranty</h2>
+                <button class="close-btn" onclick="closeModal('modal-add-warranty')">&times;</button>
+            </div>
+            <form id="add-warranty-form">
+                <div class="form-group">
+                    <label>Asset</label>
+                    <select name="assetId" id="warranty-asset-select" required>
+                        <option value="">Select an asset...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Warranty Provider</label>
+                    <input type="text" name="provider" required>
+                </div>
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date" name="startDate" required>
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input type="date" name="endDate" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('modal-add-warranty')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Warranty</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Main App Script -->
+    <script src="app.js"></script>
+</body>
+</html>
