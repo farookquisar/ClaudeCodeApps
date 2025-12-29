@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssetVault Pro - Complete Asset Lifecycle Management</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <div class="logo-icon">🏢</div>
+                    <span class="logo-text">AssetVault<span class="logo-pro">PRO</span></span>
+                </div>
+                <div class="nav-links">
+                    <a href="#dashboard" class="nav-link active" data-page="dashboard">Dashboard</a>
+                    <a href="#assets" class="nav-link" data-page="assets">Assets</a>
+                    <a href="#tasks" class="nav-link" data-page="tasks">Tasks</a>
+                    <a href="#maintenance" class="nav-link" data-page="maintenance">Maintenance</a>
+                    <a href="#audit" class="nav-link" data-page="audit">Audit</a>
+                    <a href="#analytics" class="nav-link" data-page="analytics">Analytics</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn-icon notification-btn">
+                        <span class="notification-badge">3</span>
+                        🔔
+                    </button>
+                    <div class="user-menu">
+                        <div class="user-avatar">AD</div>
+                        <span class="user-name">Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Dashboard Page -->
+            <div id="page-dashboard" class="page active">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Manage Your Assets<br>
+                            <span class="gradient-text">Like Never Before</span>
+                        </h1>
+                        <p class="hero-subtitle">Complete lifecycle management from acquisition to disposal. Track, maintain, and optimize every asset with powerful automation and smart analytics.</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary btn-lg" onclick="showAddAssetModal()">
+                                ➕ Add New Asset
+                            </button>
+                            <button class="btn btn-secondary btn-lg" onclick="showPage('analytics')">
+                                📊 View Analytics
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-card stat-primary">
+                            <div class="stat-icon">💼</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="total-assets">1,247</div>
+                                <div class="stat-label">Total Assets</div>
+                            </div>
+                        </div>
+                        <div class="stat-card stat-success">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="active-assets">1,089</div>
+                                <div class="stat-label">Active Assets</div>
+                            </div>
+                        </div>
+                        <div class="stat-card stat-warning">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="maintenance-due">23</div>
+                                <div class="stat-label">Maintenance Due</div>
+                            </div>
+                        </div>
+                        <div class="stat-card stat-danger">
+                            <div class="stat-icon">⏰</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="warranty-expiring">12</div>
+                                <div class="stat-label">Warranty Expiring</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section class="quick-actions">
+                    <h2 class="section-title">⚡ Quick Actions</h2>
+                    <div class="action-grid">
+                        <div class="action-card" onclick="showAddAssetModal()">
+                            <div class="action-icon bg-blue">📦</div>
+                            <h3>Register Asset</h3>
+                            <p>Add single asset or bulk import</p>
+                        </div>
+                        <div class="action-card" onclick="showTransferModal()">
+                            <div class="action-icon bg-purple">🔄</div>
+                            <h3>Transfer Asset</h3>
+                            <p>Move assets between locations</p>
+                        </div>
+                        <div class="action-card" onclick="showMaintenanceModal()">
+                            <div class="action-icon bg-green">🔧</div>
+                            <h3>Schedule Maintenance</h3>
+                            <p>Plan asset maintenance tasks</p>
+                        </div>
+                        <div class="action-card" onclick="showDisposalModal()">
+                            <div class="action-icon bg-red">🗑️</div>
+                            <h3>Asset Disposal</h3>
+                            <p>Retire or dispose assets</p>
+                        </div>
+                        <div class="action-card" onclick="showPage('tasks')">
+                            <div class="action-icon bg-yellow">📋</div>
+                            <h3>Manage Tasks</h3>
+                            <p>View and assign tasks</p>
+                        </div>
+                        <div class="action-card" onclick="showPage('audit')">
+                            <div class="action-icon bg-pink">🔍</div>
+                            <h3>Start Audit</h3>
+                            <p>Begin asset verification</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Recent Activity -->
+                <section class="recent-activity">
+                    <div class="section-header">
+                        <h2 class="section-title">📝 Recent Activity</h2>
+                        <button class="btn btn-outline btn-sm">View All</button>
+                    </div>
+                    <div class="activity-list" id="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon bg-green">✅</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Asset Transfer Completed</div>
+                                <div class="activity-desc">MacBook Pro #LAP-2023-1247 transferred to Engineering Dept</div>
+                                <div class="activity-time">2 minutes ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-blue">📦</div>
+                            <div class="activity-content">
+                                <div class="activity-title">New Assets Registered</div>
+                                <div class="activity-desc">15 Dell Monitors added via CSV import</div>
+                                <div class="activity-time">1 hour ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-purple">🔧</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Maintenance Scheduled</div>
+                                <div class="activity-desc">HVAC System #HVAC-001 - Annual servicing</div>
+                                <div class="activity-time">3 hours ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-yellow">⚠️</div>
+                            <div class="activity-content">
+                                <div class="activity-title">Warranty Alert</div>
+                                <div class="activity-desc">Server #SRV-089 warranty expires in 30 days</div>
+                                <div class="activity-time">5 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Assets Page -->
+            <div id="page-assets" class="page">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Asset Register</h1>
+                        <p class="page-subtitle">Manage your complete asset inventory with powerful tools</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-outline" onclick="showImportModal()">📥 Import CSV</button>
+                        <button class="btn btn-outline" onclick="showDiscoveryModal()">🔍 Network Discovery</button>
+                        <button class="btn btn-primary" onclick="showAddAssetModal()">➕ Add Asset</button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <input type="text" class="input" placeholder="🔍 Search assets..." id="asset-search">
+                        <select class="select" id="category-filter">
+                            <option value="">All Categories</option>
+                            <option value="computers">Computers</option>
+                            <option value="furniture">Furniture</option>
+                            <option value="vehicles">Vehicles</option>
+                            <option value="equipment">Equipment</option>
+                        </select>
+                        <select class="select" id="status-filter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="maintenance">In Maintenance</option>
+                            <option value="storage">In Storage</option>
+                            <option value="disposed">Disposed</option>
+                        </select>
+                        <select class="select" id="location-filter">
+                            <option value="">All Locations</option>
+                            <option value="hq">Headquarters</option>
+                            <option value="branch1">Branch Office 1</option>
+                            <option value="branch2">Branch Office 2</option>
+                            <option value="warehouse">Warehouse</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-ghost" onclick="clearFilters()">Clear Filters</button>
+                </div>
+
+                <!-- Assets Table -->
+                <div class="table-container">
+                    <table class="asset-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" class="checkbox"></th>
+                                <th>Asset ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Value</th>
+                                <th>Assigned To</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assets-table-body">
+                            <tr>
+                                <td><input type="checkbox" class="checkbox"></td>
+                                <td><span class="asset-id">LAP-2023-1247</span></td>
+                                <td>
+                                    <div class="asset-name-cell">
+                                        <span class="asset-icon">💻</span>
+                                        <span>MacBook Pro 16" M3</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-badge bg-blue">Computers</span></td>
+                                <td>Engineering Dept</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>$2,499</td>
+                                <td>John Smith</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" onclick="viewAsset(this)" title="View">👁️</button>
+                                        <button class="btn-icon" onclick="editAsset(this)" title="Edit">✏️</button>
+                                        <button class="btn-icon" onclick="transferAsset(this)" title="Transfer">🔄</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="checkbox"></td>
+                                <td><span class="asset-id">MON-2024-0445</span></td>
+                                <td>
+                                    <div class="asset-name-cell">
+                                        <span class="asset-icon">🖥️</span>
+                                        <span>Dell UltraSharp 27"</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-badge bg-blue">Computers</span></td>
+                                <td>Design Dept</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>$450</td>
+                                <td>Sarah Johnson</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" onclick="viewAsset(this)" title="View">👁️</button>
+                                        <button class="btn-icon" onclick="editAsset(this)" title="Edit">✏️</button>
+                                        <button class="btn-icon" onclick="transferAsset(this)" title="Transfer">🔄</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="checkbox"></td>
+                                <td><span class="asset-id">HVAC-001</span></td>
+                                <td>
+                                    <div class="asset-name-cell">
+                                        <span class="asset-icon">❄️</span>
+                                        <span>Central AC Unit</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-badge bg-purple">Equipment</span></td>
+                                <td>Building A</td>
+                                <td><span class="status-badge status-maintenance">Maintenance</span></td>
+                                <td>$15,000</td>
+                                <td>Facilities Team</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" onclick="viewAsset(this)" title="View">👁️</button>
+                                        <button class="btn-icon" onclick="editAsset(this)" title="Edit">✏️</button>
+                                        <button class="btn-icon" onclick="transferAsset(this)" title="Transfer">🔄</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="checkbox"></td>
+                                <td><span class="asset-id">DESK-2024-0789</span></td>
+                                <td>
+                                    <div class="asset-name-cell">
+                                        <span class="asset-icon">🪑</span>
+                                        <span>Herman Miller Aeron Chair</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-badge bg-green">Furniture</span></td>
+                                <td>Executive Office</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>$1,295</td>
+                                <td>Michael Chen</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" onclick="viewAsset(this)" title="View">👁️</button>
+                                        <button class="btn-icon" onclick="editAsset(this)" title="Edit">✏️</button>
+                                        <button class="btn-icon" onclick="transferAsset(this)" title="Transfer">🔄</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="checkbox"></td>
+                                <td><span class="asset-id">VEH-2023-0012</span></td>
+                                <td>
+                                    <div class="asset-name-cell">
+                                        <span class="asset-icon">🚗</span>
+                                        <span>Toyota Camry 2023</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-badge bg-yellow">Vehicles</span></td>
+                                <td>Fleet Garage</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>$28,500</td>
+                                <td>Sales Team</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" onclick="viewAsset(this)" title="View">👁️</button>
+                                        <button class="btn-icon" onclick="editAsset(this)" title="Edit">✏️</button>
+                                        <button class="btn-icon" onclick="transferAsset(this)" title="Transfer">🔄</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Bulk Actions Bar (shown when items selected) -->
+                <div class="bulk-actions-bar" id="bulk-actions" style="display: none;">
+                    <span class="bulk-count">5 assets selected</span>
+                    <div class="bulk-buttons">
+                        <button class="btn btn-sm btn-outline">🔄 Bulk Transfer</button>
+                        <button class="btn btn-sm btn-outline">💰 Update Pricing</button>
+                        <button class="btn btn-sm btn-outline">🗑️ Bulk Disposal</button>
+                        <button class="btn btn-sm btn-ghost">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Page -->
+            <div id="page-tasks" class="page">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Task Management</h1>
+                        <p class="page-subtitle">Assign and track asset-related tasks across your team</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="showCreateTaskModal()">➕ Create Task</button>
+                    </div>
+                </div>
+
+                <!-- Task Stats -->
+                <div class="task-stats">
+                    <div class="task-stat-card">
+                        <div class="task-stat-icon bg-yellow">⏳</div>
+                        <div class="task-stat-info">
+                            <div class="task-stat-value">8</div>
+                            <div class="task-stat-label">Started</div>
+                        </div>
+                    </div>
+                    <div class="task-stat-card">
+                        <div class="task-stat-icon bg-blue">🚗</div>
+                        <div class="task-stat-info">
+                            <div class="task-stat-value">5</div>
+                            <div class="task-stat-label">Reached</div>
+                        </div>
+                    </div>
+                    <div class="task-stat-card">
+                        <div class="task-stat-icon bg-purple">⚙️</div>
+                        <div class="task-stat-info">
+                            <div class="task-stat-value">12</div>
+                            <div class="task-stat-label">Work Started</div>
+                        </div>
+                    </div>
+                    <div class="task-stat-card">
+                        <div class="task-stat-icon bg-green">✅</div>
+                        <div class="task-stat-info">
+                            <div class="task-stat-value">34</div>
+                            <div class="task-stat-label">Completed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Filters -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <select class="select" id="task-status-filter">
+                            <option value="">All Status</option>
+                            <option value="started">Started</option>
+                            <option value="reached">Reached</option>
+                            <option value="work-started">Work Started</option>
+                            <option value="work-finished">Work Finished</option>
+                        </select>
+                        <select class="select" id="task-type-filter">
+                            <option value="">All Types</option>
+                            <option value="transfer">Transfer</option>
+                            <option value="assign">Assignment</option>
+                            <option value="disposal">Disposal</option>
+                            <option value="pricing">Pricing Update</option>
+                            <option value="maintenance">Maintenance</option>
+                        </select>
+                        <select class="select" id="task-assignee-filter">
+                            <option value="">All Assignees</option>
+                            <option value="john">John Smith</option>
+                            <option value="sarah">Sarah Johnson</option>
+                            <option value="mike">Michael Chen</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tasks List -->
+                <div class="tasks-grid" id="tasks-grid">
+                    <div class="task-card">
+                        <div class="task-header">
+                            <span class="task-type-badge bg-blue">Transfer</span>
+                            <span class="task-status-badge status-work-started">Work Started</span>
+                        </div>
+                        <h3 class="task-title">Transfer 15 Laptops to New Office</h3>
+                        <p class="task-description">Move MacBook Pros from HQ to Branch Office 2 for new hires</p>
+                        <div class="task-meta">
+                            <div class="task-assignee">
+                                <span class="assignee-avatar">JS</span>
+                                <span>John Smith</span>
+                            </div>
+                            <div class="task-date">Due: Dec 30, 2025</div>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                            <span class="progress-text">60% Complete</span>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-sm btn-outline" onclick="viewTask(this)">View Details</button>
+                            <button class="btn btn-sm btn-primary" onclick="updateTaskStatus(this)">Update Status</button>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-header">
+                            <span class="task-type-badge bg-green">Pricing</span>
+                            <span class="task-status-badge status-started">Started</span>
+                        </div>
+                        <h3 class="task-title">Update Asset Valuations Q4</h3>
+                        <p class="task-description">Revalue all IT equipment based on market depreciation</p>
+                        <div class="task-meta">
+                            <div class="task-assignee">
+                                <span class="assignee-avatar">SJ</span>
+                                <span>Sarah Johnson</span>
+                            </div>
+                            <div class="task-date">Due: Jan 5, 2026</div>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 25%"></div>
+                            </div>
+                            <span class="progress-text">25% Complete</span>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-sm btn-outline" onclick="viewTask(this)">View Details</button>
+                            <button class="btn btn-sm btn-primary" onclick="updateTaskStatus(this)">Update Status</button>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-header">
+                            <span class="task-type-badge bg-red">Disposal</span>
+                            <span class="task-status-badge status-reached">Reached</span>
+                        </div>
+                        <h3 class="task-title">Dispose of Legacy Servers</h3>
+                        <p class="task-description">Securely wipe and dispose 20 end-of-life servers</p>
+                        <div class="task-meta">
+                            <div class="task-assignee">
+                                <span class="assignee-avatar">MC</span>
+                                <span>Michael Chen</span>
+                            </div>
+                            <div class="task-date">Due: Dec 28, 2025</div>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%"></div>
+                            </div>
+                            <span class="progress-text">40% Complete</span>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-sm btn-outline" onclick="viewTask(this)">View Details</button>
+                            <button class="btn btn-sm btn-primary" onclick="updateTaskStatus(this)">Update Status</button>
+                        </div>
+                    </div>
+
+                    <div class="task-card">
+                        <div class="task-header">
+                            <span class="task-type-badge bg-purple">Maintenance</span>
+                            <span class="task-status-badge status-work-finished">Work Finished</span>
+                        </div>
+                        <h3 class="task-title">Annual HVAC Maintenance</h3>
+                        <p class="task-description">Service all HVAC units across headquarters</p>
+                        <div class="task-meta">
+                            <div class="task-assignee">
+                                <span class="assignee-avatar">JS</span>
+                                <span>John Smith</span>
+                            </div>
+                            <div class="task-date">Completed: Dec 27, 2025</div>
+                        </div>
+                        <div class="task-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-green" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-text">100% Complete</span>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-sm btn-outline" onclick="viewTask(this)">View Details</button>
+                            <button class="btn btn-sm btn-success">✓ Completed</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maintenance Page -->
+            <div id="page-maintenance" class="page">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Maintenance & Warranties</h1>
+                        <p class="page-subtitle">Track maintenance schedules and manage warranties & contracts</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-outline" onclick="showAddWarrantyModal()">📜 Add Warranty</button>
+                        <button class="btn btn-primary" onclick="showMaintenanceModal()">🔧 Schedule Maintenance</button>
+                    </div>
+                </div>
+
+                <!-- Maintenance Overview -->
+                <div class="maintenance-overview">
+                    <div class="overview-card card-danger">
+                        <div class="overview-icon">🚨</div>
+                        <div class="overview-content">
+                            <div class="overview-title">Overdue</div>
+                            <div class="overview-value">4</div>
+                            <div class="overview-desc">Maintenance tasks overdue</div>
+                        </div>
+                    </div>
+                    <div class="overview-card card-warning">
+                        <div class="overview-icon">⚠️</div>
+                        <div class="overview-content">
+                            <div class="overview-title">Due Soon</div>
+                            <div class="overview-value">12</div>
+                            <div class="overview-desc">Due within 7 days</div>
+                        </div>
+                    </div>
+                    <div class="overview-card card-info">
+                        <div class="overview-icon">📅</div>
+                        <div class="overview-content">
+                            <div class="overview-title">Scheduled</div>
+                            <div class="overview-value">28</div>
+                            <div class="overview-desc">Upcoming maintenance</div>
+                        </div>
+                    </div>
+                    <div class="overview-card card-success">
+                        <div class="overview-icon">✅</div>
+                        <div class="overview-content">
+                            <div class="overview-title">Completed</div>
+                            <div class="overview-value">156</div>
+                            <div class="overview-desc">This quarter</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchMaintenanceTab('maintenance')">Maintenance Schedule</button>
+                    <button class="tab" onclick="switchMaintenanceTab('warranties')">Warranties</button>
+                    <button class="tab" onclick="switchMaintenanceTab('contracts')">Contracts</button>
+                </div>
+
+                <!-- Maintenance Tab Content -->
+                <div id="maintenance-tab" class="tab-content active">
+                    <div class="maintenance-list">
+                        <div class="maintenance-item priority-high">
+                            <div class="maintenance-status">
+                                <div class="status-indicator bg-red"></div>
+                                <span class="priority-badge priority-high">High Priority</span>
+                            </div>
+                            <div class="maintenance-details">
+                                <h3>Fire Suppression System - Annual Inspection</h3>
+                                <p class="maintenance-asset">Asset: FIRE-SYS-001 | Building A</p>
+                                <div class="maintenance-meta">
+                                    <span>📅 Due: Dec 29, 2025</span>
+                                    <span>👤 Assigned: Safety Team</span>
+                                    <span>💰 Est. Cost: $1,200</span>
+                                </div>
+                            </div>
+                            <div class="maintenance-actions">
+                                <button class="btn btn-sm btn-primary">Schedule Now</button>
+                                <button class="btn btn-sm btn-outline">Details</button>
+                            </div>
+                        </div>
+
+                        <div class="maintenance-item priority-medium">
+                            <div class="maintenance-status">
+                                <div class="status-indicator bg-yellow"></div>
+                                <span class="priority-badge priority-medium">Medium Priority</span>
+                            </div>
+                            <div class="maintenance-details">
+                                <h3>Server Room AC - Quarterly Service</h3>
+                                <p class="maintenance-asset">Asset: HVAC-SR-002 | Data Center</p>
+                                <div class="maintenance-meta">
+                                    <span>📅 Due: Jan 3, 2026</span>
+                                    <span>👤 Assigned: Facilities</span>
+                                    <span>💰 Est. Cost: $450</span>
+                                </div>
+                            </div>
+                            <div class="maintenance-actions">
+                                <button class="btn btn-sm btn-primary">Schedule Now</button>
+                                <button class="btn btn-sm btn-outline">Details</button>
+                            </div>
+                        </div>
+
+                        <div class="maintenance-item priority-low">
+                            <div class="maintenance-status">
+                                <div class="status-indicator bg-green"></div>
+                                <span class="priority-badge priority-low">Low Priority</span>
+                            </div>
+                            <div class="maintenance-details">
+                                <h3>Office Printers - Routine Cleaning</h3>
+                                <p class="maintenance-asset">Asset: Multiple (12 units) | All Offices</p>
+                                <div class="maintenance-meta">
+                                    <span>📅 Due: Jan 15, 2026</span>
+                                    <span>👤 Assigned: IT Support</span>
+                                    <span>💰 Est. Cost: $300</span>
+                                </div>
+                            </div>
+                            <div class="maintenance-actions">
+                                <button class="btn btn-sm btn-primary">Schedule Now</button>
+                                <button class="btn btn-sm btn-outline">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warranties Tab Content -->
+                <div id="warranties-tab" class="tab-content">
+                    <div class="warranty-grid">
+                        <div class="warranty-card expiring-soon">
+                            <div class="warranty-header">
+                                <span class="warranty-status-badge status-expiring">Expiring Soon</span>
+                                <span class="warranty-days">12 days left</span>
+                            </div>
+                            <h3>Dell Server Warranty</h3>
+                            <p class="warranty-asset">Server #SRV-089</p>
+                            <div class="warranty-details">
+                                <div class="warranty-row">
+                                    <span class="warranty-label">Start Date:</span>
+                                    <span>Jan 10, 2023</span>
+                                </div>
+                                <div class="warranty-row">
+                                    <span class="warranty-label">End Date:</span>
+                                    <span>Jan 9, 2026</span>
+                                </div>
+                                <div class="warranty-row">
+                                    <span class="warranty-label">Provider:</span>
+                                    <span>Dell Technologies</span>
+                                </div>
+                                <div class="warranty-row">
+                                    <span class="warranty-label">Coverage:</span>
+                                    <span>Full Parts & Labor</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-warning btn-full">⚠️ Renew Warranty</button>
+                        </div>
+
+                        <div class="warranty-card active">
+                            <div class="warranty-header">
+                                <span class="warranty-status-badge status-active">Active</span>
+                                <span class="warranty-days">8 months left</span>
+                            </div>
+                            <h3>Apple Care+ Business</h3>
+                            <p class="warranty-asset">MacBook Fleet (45 units)</p>
+                            <div class="warranty-details">
+                                <div class="warranty-row">
+                                    <span class="warranty-label">Start Date:</span>
+                                    <span>Mar 15, 2024</span>
+                                </div>
+                                <div class="warranty-row">
+                                    <span class="warranty-label">End Date:</span>
+                                    <span>Mar 14, 2027</span>
+                                </div>
+                                <div class="warranty-row">
+                                    <span class="warranty-label">Provider:</span>
+                                    <span>Apple Inc.</span>
+                                </div>
+                                <div class="warranty-row">
+                                    <span class="warranty-label">Coverage:</span>
+                                    <span>Hardware + Accidental Damage</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-outline btn-full">View Details</button>
+                        </div>
+
+                        <div class="warranty-card active">
+                            <div class="warranty-header">
+                                <span class="warranty-status-badge status-active">Active</span>
+                                <span class="warranty-days">1.5 years left</span>
+                            </div>
+                            <h3>Toyota Fleet Warranty</h3>
+                            <p class="warranty-asset">Company Vehicles (8 units)</p>
+                            <div class="warranty-details">
+                                <div class="warranty-row">
+                                    <span class="warranty-label">Start Date:</span>
+                                    <span>Jun 1, 2023</span>
+                                </div>
+                                <div class="warranty-row">
+                                    <span class="warranty-label">End Date:</span>
+                                    <span>Jun 1, 2028</span>
+                                </div>
+                                <div class="warranty-row">
+                                    <span class="warranty-label">Provider:</span>
+                                    <span>Toyota Motor Corp</span>
+                                </div>
+                                <div class="warranty-row">
+                                    <span class="warranty-label">Coverage:</span>
+                                    <span>Powertrain + Roadside</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-outline btn-full">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contracts Tab Content -->
+                <div id="contracts-tab" class="tab-content">
+                    <div class="contracts-list">
+                        <div class="contract-item">
+                            <div class="contract-icon bg-blue">📄</div>
+                            <div class="contract-details">
+                                <h3>Office 365 Enterprise License</h3>
+                                <p>Microsoft Corporation - Annual Subscription</p>
+                                <div class="contract-meta">
+                                    <span>📅 Expires: Apr 30, 2026</span>
+                                    <span>💰 Value: $24,500/year</span>
+                                    <span>👥 Covers: 250 users</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline">View Contract</button>
+                        </div>
+
+                        <div class="contract-item">
+                            <div class="contract-icon bg-purple">📄</div>
+                            <div class="contract-details">
+                                <h3>Building Maintenance Contract</h3>
+                                <p>ABC Facilities Management - Multi-year Agreement</p>
+                                <div class="contract-meta">
+                                    <span>📅 Expires: Dec 31, 2026</span>
+                                    <span>💰 Value: $85,000/year</span>
+                                    <span>🏢 Coverage: All facilities</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline">View Contract</button>
+                        </div>
+
+                        <div class="contract-item">
+                            <div class="contract-icon bg-green">📄</div>
+                            <div class="contract-details">
+                                <h3>IT Support & Managed Services</h3>
+                                <p>TechSupport Pro - 24/7 Support Coverage</p>
+                                <div class="contract-meta">
+                                    <span>📅 Expires: Feb 28, 2026</span>
+                                    <span>💰 Value: $48,000/year</span>
+                                    <span>⏰ SLA: 4-hour response</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline">View Contract</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audit Page -->
+            <div id="page-audit" class="page">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Asset Audit</h1>
+                        <p class="page-subtitle">Verify and reconcile your physical assets with records</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-outline" onclick="exportAuditReport()">📥 Export Report</button>
+                        <button class="btn btn-primary" onclick="startNewAudit()">🔍 Start New Audit</button>
+                    </div>
+                </div>
+
+                <!-- Audit Stats -->
+                <div class="audit-stats">
+                    <div class="audit-stat-card">
+                        <div class="audit-stat-header">
+                            <h3>Current Audit Progress</h3>
+                            <span class="audit-status-badge status-in-progress">In Progress</span>
+                        </div>
+                        <div class="audit-progress-circle">
+                            <svg viewBox="0 0 120 120" class="progress-ring">
+                                <circle cx="60" cy="60" r="50" class="progress-ring-bg"></circle>
+                                <circle cx="60" cy="60" r="50" class="progress-ring-fill" style="stroke-dasharray: 314; stroke-dashoffset: 94.2;"></circle>
+                            </svg>
+                            <div class="progress-percentage">70%</div>
+                        </div>
+                        <div class="audit-numbers">
+                            <div class="audit-number">
+                                <span class="number-value">873</span>
+                                <span class="number-label">Verified</span>
+                            </div>
+                            <div class="audit-number">
+                                <span class="number-value">374</span>
+                                <span class="number-label">Remaining</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="audit-findings">
+                        <h3>Audit Findings</h3>
+                        <div class="finding-item finding-error">
+                            <div class="finding-icon">❌</div>
+                            <div class="finding-content">
+                                <div class="finding-title">Missing Assets</div>
+                                <div class="finding-value">8 assets</div>
+                            </div>
+                        </div>
+                        <div class="finding-item finding-warning">
+                            <div class="finding-icon">⚠️</div>
+                            <div class="finding-content">
+                                <div class="finding-title">Discrepancies</div>
+                                <div class="finding-value">15 assets</div>
+                            </div>
+                        </div>
+                        <div class="finding-item finding-info">
+                            <div class="finding-icon">ℹ️</div>
+                            <div class="finding-content">
+                                <div class="finding-title">Unlisted Assets</div>
+                                <div class="finding-value">12 assets</div>
+                            </div>
+                        </div>
+                        <div class="finding-item finding-success">
+                            <div class="finding-icon">✅</div>
+                            <div class="finding-content">
+                                <div class="finding-title">Match Records</div>
+                                <div class="finding-value">850 assets</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit History -->
+                <div class="section-header">
+                    <h2 class="section-title">Audit History</h2>
+                    <button class="btn btn-outline btn-sm">View All</button>
+                </div>
+
+                <div class="audit-history">
+                    <div class="audit-card audit-active">
+                        <div class="audit-card-header">
+                            <div>
+                                <h3>Q4 2025 Asset Audit</h3>
+                                <p class="audit-period">Dec 20 - Dec 31, 2025</p>
+                            </div>
+                            <span class="audit-status-badge status-in-progress">In Progress</span>
+                        </div>
+                        <div class="audit-card-body">
+                            <div class="audit-progress-bar">
+                                <div class="audit-progress-fill" style="width: 70%"></div>
+                            </div>
+                            <div class="audit-details-grid">
+                                <div class="audit-detail">
+                                    <span class="detail-label">Total Assets:</span>
+                                    <span class="detail-value">1,247</span>
+                                </div>
+                                <div class="audit-detail">
+                                    <span class="detail-label">Verified:</span>
+                                    <span class="detail-value">873</span>
+                                </div>
+                                <div class="audit-detail">
+                                    <span class="detail-label">Auditor:</span>
+                                    <span class="detail-value">Sarah Johnson</span>
+                                </div>
+                                <div class="audit-detail">
+                                    <span class="detail-label">Locations:</span>
+                                    <span class="detail-value">4</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="audit-card-footer">
+                            <button class="btn btn-sm btn-primary">Continue Audit</button>
+                            <button class="btn btn-sm btn-outline">View Details</button>
+                        </div>
+                    </div>
+
+                    <div class="audit-card audit-completed">
+                        <div class="audit-card-header">
+                            <div>
+                                <h3>Q3 2025 Asset Audit</h3>
+                                <p class="audit-period">Sep 15 - Sep 25, 2025</p>
+                            </div>
+                            <span class="audit-status-badge status-completed">Completed</span>
+                        </div>
+                        <div class="audit-card-body">
+                            <div class="audit-details-grid">
+                                <div class="audit-detail">
+                                    <span class="detail-label">Total Assets:</span>
+                                    <span class="detail-value">1,189</span>
+                                </div>
+                                <div class="audit-detail">
+                                    <span class="detail-label">Verified:</span>
+                                    <span class="detail-value">1,189</span>
+                                </div>
+                                <div class="audit-detail">
+                                    <span class="detail-label">Auditor:</span>
+                                    <span class="detail-value">Michael Chen</span>
+                                </div>
+                                <div class="audit-detail">
+                                    <span class="detail-label">Accuracy:</span>
+                                    <span class="detail-value">98.5%</span>
+                                </div>
+                            </div>
+                            <div class="audit-summary">
+                                <span class="summary-item">✅ 1,171 Matched</span>
+                                <span class="summary-item">⚠️ 12 Discrepancies</span>
+                                <span class="summary-item">❌ 6 Missing</span>
+                            </div>
+                        </div>
+                        <div class="audit-card-footer">
+                            <button class="btn btn-sm btn-outline">View Report</button>
+                            <button class="btn btn-sm btn-ghost">Download PDF</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div id="page-analytics" class="page">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Analytics & Reports</h1>
+                        <p class="page-subtitle">Smart insights into your asset portfolio and lifecycle</p>
+                    </div>
+                    <div class="page-actions">
+                        <select class="select">
+                            <option>Last 30 Days</option>
+                            <option>Last Quarter</option>
+                            <option>Last Year</option>
+                            <option>All Time</option>
+                        </select>
+                        <button class="btn btn-outline">📥 Export Report</button>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="analytics-metrics">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-title">Total Asset Value</span>
+                            <span class="metric-trend trend-up">↗ 12%</span>
+                        </div>
+                        <div class="metric-value">$2.4M</div>
+                        <div class="metric-footer">
+                            <span class="metric-change">+$258K vs last quarter</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-title">Asset Utilization</span>
+                            <span class="metric-trend trend-up">↗ 5%</span>
+                        </div>
+                        <div class="metric-value">87.3%</div>
+                        <div class="metric-footer">
+                            <span class="metric-change">Optimal range: 85-90%</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-title">Maintenance Costs</span>
+                            <span class="metric-trend trend-down">↘ 8%</span>
+                        </div>
+                        <div class="metric-value">$42.5K</div>
+                        <div class="metric-footer">
+                            <span class="metric-change">-$3.7K vs last quarter</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-title">Avg Asset Age</span>
+                            <span class="metric-trend trend-neutral">→ 0%</span>
+                        </div>
+                        <div class="metric-value">2.8 yrs</div>
+                        <div class="metric-footer">
+                            <span class="metric-change">Industry avg: 3.2 years</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Asset Distribution by Category</h3>
+                        <div class="chart-placeholder">
+                            <div class="donut-chart">
+                                <svg viewBox="0 0 200 200" class="donut-svg">
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#FF6B6B" stroke-width="40" stroke-dasharray="251 314" transform="rotate(-90 100 100)"></circle>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#4ECDC4" stroke-width="40" stroke-dasharray="157 314" stroke-dashoffset="-251" transform="rotate(-90 100 100)"></circle>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#FFE66D" stroke-width="40" stroke-dasharray="94 314" stroke-dashoffset="-408" transform="rotate(-90 100 100)"></circle>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#A8E6CF" stroke-width="40" stroke-dasharray="63 314" stroke-dashoffset="-502" transform="rotate(-90 100 100)"></circle>
+                                </svg>
+                                <div class="donut-center">
+                                    <div class="donut-total">1,247</div>
+                                    <div class="donut-label">Assets</div>
+                                </div>
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color bg-red"></span>
+                                    <span class="legend-label">Computers (40%)</span>
+                                    <span class="legend-value">498</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color bg-blue"></span>
+                                    <span class="legend-label">Equipment (25%)</span>
+                                    <span class="legend-value">312</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color bg-yellow"></span>
+                                    <span class="legend-label">Furniture (15%)</span>
+                                    <span class="legend-value">187</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color bg-green"></span>
+                                    <span class="legend-label">Vehicles (10%)</span>
+                                    <span class="legend-value">125</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color bg-purple"></span>
+                                    <span class="legend-label">Other (10%)</span>
+                                    <span class="legend-value">125</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <h3 class="chart-title">Asset Status Overview</h3>
+                        <div class="chart-placeholder">
+                            <div class="bar-chart">
+                                <div class="bar-item">
+                                    <div class="bar-label">Active</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill bg-green" style="width: 87%"></div>
+                                    </div>
+                                    <div class="bar-value">1,089</div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-label">In Maintenance</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill bg-yellow" style="width: 6%"></div>
+                                    </div>
+                                    <div class="bar-value">75</div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-label">In Storage</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill bg-blue" style="width: 5%"></div>
+                                    </div>
+                                    <div class="bar-value">62</div>
+                                </div>
+                                <div class="bar-item">
+                                    <div class="bar-label">Pending Disposal</div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill bg-red" style="width: 2%"></div>
+                                    </div>
+                                    <div class="bar-value">21</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card chart-full">
+                        <h3 class="chart-title">Asset Lifecycle Trends (12 Months)</h3>
+                        <div class="chart-placeholder">
+                            <div class="line-chart">
+                                <div class="line-chart-area">
+                                    <svg viewBox="0 0 600 200" class="line-svg">
+                                        <polyline points="0,180 50,170 100,150 150,140 200,135 250,125 300,120 350,110 400,105 450,100 500,95 550,90 600,85" fill="none" stroke="#4ECDC4" stroke-width="3"></polyline>
+                                        <polyline points="0,150 50,145 100,130 150,125 200,130 250,135 300,140 350,145 400,150 450,155 500,158 550,160 600,162" fill="none" stroke="#FF6B6B" stroke-width="3"></polyline>
+                                        <polyline points="0,100 50,102 100,105 150,110 200,108 250,112 300,115 350,118 400,120 450,122 500,125 550,128 600,130" fill="none" stroke="#FFE66D" stroke-width="3"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="line-chart-legend">
+                                    <div class="line-legend-item">
+                                        <span class="line-color bg-blue"></span>
+                                        <span>Acquisitions</span>
+                                    </div>
+                                    <div class="line-legend-item">
+                                        <span class="line-color bg-red"></span>
+                                        <span>Transfers</span>
+                                    </div>
+                                    <div class="line-legend-item">
+                                        <span class="line-color bg-yellow"></span>
+                                        <span>Disposals</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Templates -->
+                <div class="section-header">
+                    <h2 class="section-title">📑 Quick Reports</h2>
+                </div>
+
+                <div class="report-templates">
+                    <div class="report-card">
+                        <div class="report-icon">📊</div>
+                        <h3>Asset Valuation Report</h3>
+                        <p>Complete breakdown of asset values by category, location, and department</p>
+                        <button class="btn btn-outline btn-sm btn-full">Generate Report</button>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">🔧</div>
+                        <h3>Maintenance Summary</h3>
+                        <p>Overview of completed, pending, and overdue maintenance activities</p>
+                        <button class="btn btn-outline btn-sm btn-full">Generate Report</button>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">💰</div>
+                        <h3>Depreciation Analysis</h3>
+                        <p>Asset depreciation trends and future value projections</p>
+                        <button class="btn btn-outline btn-sm btn-full">Generate Report</button>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">📈</div>
+                        <h3>Utilization Report</h3>
+                        <p>Asset usage patterns and optimization opportunities</p>
+                        <button class="btn btn-outline btn-sm btn-full">Generate Report</button>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">⚠️</div>
+                        <h3>Compliance & Audit</h3>
+                        <p>Regulatory compliance status and audit trail</p>
+                        <button class="btn btn-outline btn-sm btn-full">Generate Report</button>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">📜</div>
+                        <h3>Warranty & Contracts</h3>
+                        <p>Active warranties, expiring contracts, and renewals</p>
+                        <button class="btn btn-outline btn-sm btn-full">Generate Report</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal()"></div>
+
+    <!-- Add Asset Modal -->
+    <div id="modal-add-asset" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Asset</h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="tabs tabs-modal">
+                    <button class="tab active" onclick="switchAddAssetTab('single')">Single Asset</button>
+                    <button class="tab" onclick="switchAddAssetTab('bulk')">Bulk Entry</button>
+                    <button class="tab" onclick="switchAddAssetTab('csv')">CSV Import</button>
+                    <button class="tab" onclick="switchAddAssetTab('discovery')">Network Discovery</button>
+                </div>
+
+                <div id="add-single-tab" class="add-asset-tab active">
+                    <form class="form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="label">Asset Name *</label>
+                                <input type="text" class="input" placeholder="e.g., MacBook Pro 16">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Asset ID</label>
+                                <input type="text" class="input" placeholder="Auto-generated or custom">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="label">Category *</label>
+                                <select class="select">
+                                    <option value="">Select category</option>
+                                    <option value="computers">Computers</option>
+                                    <option value="furniture">Furniture</option>
+                                    <option value="vehicles">Vehicles</option>
+                                    <option value="equipment">Equipment</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Location *</label>
+                                <select class="select">
+                                    <option value="">Select location</option>
+                                    <option value="hq">Headquarters</option>
+                                    <option value="branch1">Branch Office 1</option>
+                                    <option value="branch2">Branch Office 2</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="label">Purchase Date</label>
+                                <input type="date" class="input">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Purchase Value</label>
+                                <input type="number" class="input" placeholder="$0.00">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Assigned To</label>
+                            <input type="text" class="input" placeholder="Employee name or department">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Description</label>
+                            <textarea class="textarea" rows="3" placeholder="Additional details about the asset"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="add-bulk-tab" class="add-asset-tab">
+                    <div class="bulk-entry-info">
+                        <p>Enter multiple assets at once by filling in the fields below. Each row represents one asset.</p>
+                    </div>
+                    <div class="bulk-entry-table">
+                        <table class="simple-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Location</th>
+                                    <th>Value</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="bulk-entry-rows">
+                                <tr>
+                                    <td><input type="text" class="input input-sm" placeholder="Asset name"></td>
+                                    <td><input type="text" class="input input-sm" placeholder="Category"></td>
+                                    <td><input type="text" class="input input-sm" placeholder="Location"></td>
+                                    <td><input type="number" class="input input-sm" placeholder="$"></td>
+                                    <td><button class="btn-icon" onclick="removeBulkRow(this)">🗑️</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="btn btn-outline btn-sm" onclick="addBulkRow()">+ Add Row</button>
+                    </div>
+                </div>
+
+                <div id="add-csv-tab" class="add-asset-tab">
+                    <div class="upload-area" id="csv-upload-area">
+                        <div class="upload-icon">📤</div>
+                        <h3>Drop CSV file here or click to browse</h3>
+                        <p>Supported format: .csv, .xlsx</p>
+                        <input type="file" id="csv-file-input" accept=".csv,.xlsx" style="display: none;">
+                        <button class="btn btn-primary" onclick="document.getElementById('csv-file-input').click()">Choose File</button>
+                    </div>
+                    <div class="csv-template-link">
+                        <a href="#" class="link">📥 Download CSV Template</a>
+                    </div>
+                </div>
+
+                <div id="add-discovery-tab" class="add-asset-tab">
+                    <div class="discovery-section">
+                        <h3>Network Discovery Settings</h3>
+                        <form class="form">
+                            <div class="form-group">
+                                <label class="label">IP Range *</label>
+                                <input type="text" class="input" placeholder="e.g., 192.168.1.0/24">
+                            </div>
+                            <div class="form-group">
+                                <label class="label">Discovery Method</label>
+                                <select class="select">
+                                    <option value="scom">SCOM (System Center Operations Manager)</option>
+                                    <option value="snmp">SNMP</option>
+                                    <option value="wmi">WMI</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" class="checkbox">
+                                    <span>Include inactive devices</span>
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-primary">Start Discovery</button>
+                        </form>
+                        <div class="discovery-results" style="display: none;">
+                            <h4>Discovered Devices</h4>
+                            <p>Scanning network...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary">Add Asset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="modal-transfer" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2>Transfer Asset</h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form class="form">
+                    <div class="form-group">
+                        <label class="label">Asset</label>
+                        <input type="text" class="input" value="MacBook Pro 16&quot; M3" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Transfer To *</label>
+                        <select class="select">
+                            <option value="">Select location or person</option>
+                            <option value="branch1">Branch Office 1</option>
+                            <option value="branch2">Branch Office 2</option>
+                            <option value="warehouse">Warehouse</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Assign To</label>
+                        <input type="text" class="input" placeholder="Employee name">
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Transfer Date</label>
+                        <input type="date" class="input">
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Notes</label>
+                        <textarea class="textarea" rows="3" placeholder="Reason for transfer"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary">Transfer Asset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="toast" class="toast">
+        <span id="toast-message">Action completed successfully!</span>
+    </div>
+
+    <script src="js/app.js"></script>
+
+    <!-- Sources -->
+    <!-- Design inspired by modern neobrutalist aesthetics and vibecode app -->
+</body>
+</html>
